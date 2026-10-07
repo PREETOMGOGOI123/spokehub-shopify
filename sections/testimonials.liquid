@@ -1,0 +1,369 @@
+<section class="testimonials reveal">
+  <div class="testimonials__head">
+    <svg class="google-g" width="28" height="28" viewBox="0 0 48 48" aria-hidden="true">
+      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+    </svg>
+    <h2 class="testimonials__title">{{ section.settings.heading }}</h2>
+    <p class="testimonials__subtitle">{{ section.settings.subtitle }}</p>
+    <div class="testimonials__divider"></div>
+    <div class="reviews-summary" id="reviews-summary"></div>
+  </div>
+
+  <div class="testimonials-slider">
+    <button class="slider-arrow slider-arrow--left" aria-label="Previous" data-dir="-1">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+
+    <div class="testimonials__grid">
+      {% for block in section.blocks %}
+        <div class="review" {{ block.shopify_attributes }}>
+          <div class="review__stars">
+            {% assign rating = block.settings.rating | default: 5 %}
+            {% for i in (1..5) %}
+              <span class="{% if i <= rating %}review__star--on{% else %}review__star--off{% endif %}">★</span>
+            {% endfor %}
+          </div>
+          <p class="review__text">{{ block.settings.text }}</p>
+          <div class="review__author">
+            <span class="review__avatar">{{ block.settings.name | slice: 0 }}</span>
+            <div>
+              <p class="review__name">{{ block.settings.name }}</p>
+              <p class="review__meta">{{ block.settings.meta }}</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <button class="slider-arrow slider-arrow--right" aria-label="Next" data-dir="1">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+  </div>
+</section>
+{% if section.settings.google_api_key != blank and section.settings.place_id != blank %}
+<script>
+  (async function () {
+    const KEY = "{{ section.settings.google_api_key }}";
+    const PLACE_ID = "{{ section.settings.place_id }}";
+
+    const grid = document.querySelector('.testimonials__grid');
+    if (grid) {
+      grid.innerHTML = '<div class="reviews-loading"><span class="reviews-spinner"></span></div>';
+    }
+
+    try {
+    if (!window.google || !google.maps) {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = `https://maps.googleapis.com/maps/api/js?key=${KEY}&libraries=places&v=weekly`;
+        s.async = true; s.onload = resolve; s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+
+    const { Place } = await google.maps.importLibrary("places");
+    const place = new Place({ id: PLACE_ID });
+    await place.fetchFields({ fields: ["reviews", "rating", "userRatingCount"] });
+
+    // Overall rating summary in the header
+    const summary = document.getElementById('reviews-summary');
+    if (summary && place.rating) {
+      summary.innerHTML =
+        `<span class="reviews-summary__score">${place.rating.toFixed(1)}</span>` +
+        `<span class="reviews-summary__stars">★★★★★</span>` +
+        `<span class="reviews-summary__count">${place.userRatingCount} Google reviews</span>`;
+    }
+
+    if (!place.reviews || !place.reviews.length) {
+      if (grid) grid.innerHTML = '<p class="reviews-empty">No reviews yet.</p>';
+      return;
+    }
+
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    place.reviews.forEach(r => {
+      const stars = Array.from({length:5}, (_,i) =>
+        `<span class="${i < r.rating ? 'review__star--on' : 'review__star--off'}">★</span>`
+      ).join('');
+      const name = r.authorAttribution?.displayName || 'Google User';
+      const photo = r.authorAttribution?.photoURI || '';
+      const avatar = photo
+        ? `<img class="review__avatar" src="${photo}" alt="${name}">`
+        : `<span class="review__avatar">${name.charAt(0)}</span>`;
+      const text = r.text?.text || r.text || r.originalText?.text || '';
+
+      grid.insertAdjacentHTML('beforeend', `
+        <div class="review">
+          <div class="review__stars">${stars}</div>
+          <p class="review__text">${text}</p>
+          <div class="review__author">
+            ${avatar}
+            <div>
+              <p class="review__name">${name}</p>
+              <p class="review__meta">Google Review</p>
+            </div>
+          </div>
+        </div>`);
+    });
+    } catch (e) {
+      console.error('Google reviews failed to load:', e);
+      if (grid) grid.innerHTML = '<p class="reviews-empty">Reviews are unavailable right now.</p>';
+    }
+  })();
+</script>
+{% endif %}
+
+<script>
+  (function () {
+    const slider = document.querySelector('.testimonials-slider');
+    if (!slider) return;
+    const track = slider.querySelector('.testimonials__grid');
+    slider.querySelectorAll('.slider-arrow').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const dir = parseInt(btn.getAttribute('data-dir'), 10);
+        track.scrollBy({ left: dir * track.clientWidth, behavior: 'smooth' });
+      });
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .testimonials {
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: calc(var(--space-8) * 2.5) var(--page-padding);
+  }
+
+  .testimonials__head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-7);
+  }
+
+  .google-g {
+    flex: 0 0 auto;
+  }
+
+  .testimonials__title {
+    font-size: var(--font-size-7);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--gray-12);
+    margin: var(--space-2) 0 0;
+  }
+
+  .testimonials__subtitle {
+    color: var(--color-muted);
+    font-size: var(--font-size-3);
+    margin: 0;
+  }
+
+  .testimonials__divider {
+    width: 72px;
+    height: 3px;
+    background: var(--gray-12);
+    margin: var(--space-4) 0;
+  }
+
+  .reviews-summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .reviews-summary:empty {
+    display: none;
+  }
+
+  .reviews-summary__score {
+    font-size: var(--font-size-6);
+    font-weight: var(--font-weight-bold);
+    color: var(--gray-12);
+  }
+
+  .reviews-summary__stars {
+    color: #f5a623;
+    font-size: var(--font-size-5);
+    letter-spacing: 2px;
+  }
+
+  .reviews-summary__count {
+    color: var(--gray-11);
+    font-size: var(--font-size-2);
+  }
+
+  .testimonials-slider {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    max-width: var(--page-max);
+    margin: 0 auto;
+  }
+
+  .testimonials__grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex: 1 1 auto;
+  }
+
+  .testimonials__grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .testimonials__grid .review {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+    box-sizing: border-box;
+  }
+
+  .review {
+    background: #fff;
+    border: 1px solid var(--gray-4, #e4e4e4);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    box-sizing: border-box;
+  }
+
+  .testimonials__grid .review__text {
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .review__stars {
+    font-size: var(--font-size-4);
+    letter-spacing: 2px;
+  }
+
+  .review__star--on {
+    color: #f5a623;
+  }
+
+  .review__star--off {
+    color: var(--gray-5);
+  }
+
+  .review__text {
+    color: var(--gray-12);
+    line-height: 1.6;
+    font-size: var(--font-size-3);
+    margin: 0;
+    flex: 1 1 auto;
+  }
+
+  .review__author {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .review__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-3);
+    flex: 0 0 auto;
+  }
+
+  span.review__avatar {
+    background: var(--color-accent);
+    color: #fff;
+  }
+
+  .review__name {
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-2);
+    margin: 0;
+  }
+
+  .review__meta {
+    color: var(--gray-11);
+    font-size: var(--font-size-1);
+    margin: 0;
+  }
+
+  .reviews-loading {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .reviews-spinner {
+    width: 36px;
+    height: 36px;
+    border: 4px solid var(--gray-5);
+    border-top-color: var(--color-accent);
+    border-radius: var(--radius-full);
+    animation: spin 0.8s linear infinite;
+  }
+
+  .reviews-empty {
+    flex: 1 1 auto;
+    text-align: center;
+    color: var(--gray-11);
+    padding: var(--space-8) 0;
+    margin: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Straight From Our Customers" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Trusted by cyclists across Northeast India" },
+    { "type": "text", "id": "google_api_key", "label": "Google API Key", "default": "AIzaSyBbX4iAa8H91BO1VuQHYmlCmMdhpQzkO9o" },
+    { "type": "text", "id": "place_id", "label": "Google Place ID", "default": "ChIJb0WsEZJYWjcRoNkpfJYZ1E0" }
+
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "range", "id": "rating", "label": "Rating", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "textarea", "id": "text", "label": "Review", "default": "Great service and genuine products. The team really knows their bikes." },
+        { "type": "text", "id": "name", "label": "Name", "default": "Rider Name" },
+        { "type": "text", "id": "meta", "label": "Meta (location / bike)", "default": "Guwahati" }
+      ]
+    }
+  ],
+  "max_blocks": 9,
+  "presets": [
+    {
+      "name": "Testimonials",
+      "blocks": [
+        { "type": "review", "settings": { "rating": 5, "text": "Bought my Trek here and got it perfectly fitted. The service team is genuinely knowledgeable — they sorted a creaking bottom bracket in minutes.", "name": "Arindam Das", "meta": "Guwahati · Trek Marlin" } },
+        { "type": "review", "settings": { "rating": 5, "text": "Best cycling store in the Northeast. Genuine parts, honest advice, and they actually ride. Got my suspension serviced before MTB Tawang — flawless.", "name": "Priya Sharma", "meta": "Shillong · Scott Spark" } },
+        { "type": "review", "settings": { "rating": 5, "text": "Hard-to-find spares that no one else stocks. Ordered a drivetrain and it arrived quick. Spokehub is the real deal for serious riders.", "name": "Rahul Boro", "meta": "Dibrugarh · Marin Bobcat" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

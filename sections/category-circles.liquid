@@ -1,0 +1,217 @@
+<div class="categories-slider reveal">
+  <div class="categories" id="category-circles">
+    <a href="{{ routes.collections_url }}/bikes" class="category">
+      <div class="category__img"><img src="{{ 'cat-bikes.jpg' | asset_url }}" alt="Bikes" width="120" height="120"></div>
+      <span class="category__label">Bikes</span>
+    </a>
+    <a href="{{ routes.collections_url }}/apparels" class="category">
+      <div class="category__img"><img src="{{ 'cat-apparels-2.png' | asset_url }}" alt="Apparels" width="120" height="120"></div>
+      <span class="category__label">Apparels</span>
+    </a>
+    <a href="{{ routes.collections_url }}/gears" class="category">
+      <div class="category__img"><img src="{{ 'cat-gears-2.png' | asset_url }}" alt="Gears" width="120" height="120"></div>
+      <span class="category__label">Gears</span>
+    </a>
+    <a href="{{ routes.collections_url }}/mtb-spares" class="category">
+      <div class="category__img"><img src="{{ 'cat-spares-3.png' | asset_url }}" alt="Spares" width="120" height="120"></div>
+      <span class="category__label">Spares</span>
+    </a>
+    <a href="{{ routes.collections_url }}/helmets" class="category">
+      <div class="category__img"><img src="{{ 'cat-helmets-3.png' | asset_url }}" alt="Helmets" width="120" height="120"></div>
+      <span class="category__label">Helmets</span>
+    </a>
+    <a href="{{ routes.collections_url }}/accessories" class="category">
+      <div class="category__img"><img src="{{ 'cat-accessories.jpg' | asset_url }}" alt="Accessories" width="120" height="120"></div>
+      <span class="category__label">Accessories</span>
+    </a>
+    <a href="{{ routes.collections_url }}/sale" class="category">
+      <div class="category__img"><img src="{{ 'cat-sale.jpg' | asset_url }}" alt="Sale" width="120" height="120"></div>
+      <span class="category__label">Sale</span>
+    </a>
+    <a href="/pages/service" class="category">
+      <div class="category__img"><img src="{{ 'cat-service.jpg' | asset_url }}" alt="Service" width="120" height="120"></div>
+      <span class="category__label">Service</span>
+    </a>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('#category-circles .category__img').forEach(function (box) {
+  var img = box.querySelector('img');
+  if (img.complete) {
+    box.classList.add('is-loaded');
+  } else {
+    img.addEventListener('load', function () { box.classList.add('is-loaded'); });
+  }
+});
+</script>
+
+{% stylesheet %}
+  .categories-slider {
+    position: relative;
+    background: var(--gray-4);
+  }
+
+  .categories-slider > .categories {
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: calc(var(--space-8) * 1.5) var(--page-padding);
+  }
+
+  .categories {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    overflow-x: auto;
+    gap: var(--space-6);
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .categories::-webkit-scrollbar {
+    display: none;
+  }
+
+  .category {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    width: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    text-decoration: none;
+    color: var(--color-text);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+  }
+
+  .category--active .category__img {
+    border: 2px solid var(--color-accent);
+  }
+
+  .category--active .category__label {
+    color: var(--color-accent);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .category__img {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--gray-3);
+    border: 1px solid var(--color-border);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .category__img::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    border: 3px solid var(--gray-5);
+    border-top-color: var(--color-accent);
+    border-radius: var(--radius-full);
+    animation: spin 0.8s linear infinite;
+  }
+
+  .category__img.is-loaded::after {
+    display: none;
+  }
+
+  .category:hover .category__img {
+    box-shadow: var(--shadow-3);
+  }
+
+  .category__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s ease;
+  }
+
+  .category:hover .category__img img {
+    transform: scale(1.12);
+  }
+
+  .category__img.is-loaded img {
+    opacity: 1;
+  }
+
+  .category__label {
+    font-size: var(--font-size-2);
+    font-weight: var(--font-weight-medium);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .category {
+      width: 110px;
+    }
+
+    .category__img {
+      width: 100px;
+      height: 100px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .categories {
+      gap: var(--space-4);
+    }
+
+    .category {
+      width: 90px;
+    }
+
+    .category__img {
+      width: 84px;
+      height: 84px;
+    }
+
+    .category__label {
+      font-size: var(--font-size-1);
+      max-width: 84px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Category Circles",
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "image_picker", "id": "image", "label": "Image (optional)" },
+        { "type": "text", "id": "label", "label": "Label (optional)" },
+        { "type": "url", "id": "link", "label": "Custom link (if no collection)" }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    { "name": "Category Circles" }
+  ]
+}
+{% endschema %}

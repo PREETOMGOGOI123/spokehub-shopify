@@ -1,0 +1,55 @@
+<section class="services reveal">
+  <div class="products__head" style="justify-content: flex-end;">
+    <a href="{{ section.settings.button_link | default: '/pages/service' }}" class="products__viewall">View all →</a>
+  </div>
+
+  <div class="products__grid">
+    {% render 'service-card', image: 'srv-bb.jpg', title: 'Bottom Bracket Service', price: 'From ₹500' %}
+    {% render 'service-card', image: 'srv-wheel.jpg', title: 'Wheel Truing & Hub Service', price: 'From ₹400' %}
+    {% render 'service-card', image: 'srv-drivetrain.jpg', title: 'Drivetrain Tuning', price: 'From ₹600' %}
+    {% render 'service-card', image: 'srv-brake.jpg', title: 'Hydraulic Brake Bleed', price: 'From ₹700' %}
+    {% render 'service-card', image: 'srv-suspension.jpg', title: 'Suspension Service', price: 'From ₹1200' %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .services {
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: var(--space-6) var(--page-padding) var(--section-y);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Expert Services",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Expert Services" },
+    { "type": "url", "id": "button_link", "label": "View all link" }
+  ],
+  "blocks": [
+    {
+      "type": "service",
+      "name": "Service",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Bottom Bracket Service" },
+        { "type": "text", "id": "price", "label": "Price (optional)", "default": "From ₹500" }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Expert Services",
+      "blocks": [
+        { "type": "service", "settings": { "title": "Bottom Bracket Service", "price": "From ₹500" } },
+        { "type": "service", "settings": { "title": "Wheel Truing & Hub Service", "price": "From ₹400" } },
+        { "type": "service", "settings": { "title": "Drivetrain Tuning", "price": "From ₹600" } },
+        { "type": "service", "settings": { "title": "Hydraulic Brake Bleed", "price": "From ₹700" } },
+        { "type": "service", "settings": { "title": "Suspension Service", "price": "From ₹1200" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "categories": {
+      "type": "category-circles"
+    },
+    "main": {
+      "type": "main-collection"
+    }
+  },
+  "order": ["categories", "main"]
+}

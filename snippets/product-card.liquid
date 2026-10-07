@@ -1,0 +1,16 @@
+<a href="{{ product.url }}" class="card">
+  <div class="card__img">
+    {% if product.featured_image %}
+      <img src="{{ product.featured_image | image_url: width: 400 }}"  width="400"
+      height="{{ 400 | divided_by: product.featured_image.aspect_ratio | round }}"
+      alt="{{ product.title }}" loading="lazy">
+    {% endif %}
+    {% unless product.available %}
+      <span class="card__badge">Sold out</span>
+    {% endunless %}
+  </div>
+  <div class="card__body">
+    <h3 class="card__title">{{ product.title }}</h3>
+    <p class="card__price">{{ product.price | money }}</p>
+  </div>
+</a>

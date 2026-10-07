@@ -1,0 +1,23 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero"
+    },
+    "categories": {
+      "type": "category-circles"
+    },
+    "main": {
+      "type": "featured-products"
+    },
+    "service_banner": {
+      "type": "service-banner"
+    },
+    "promo_split": {
+      "type": "promo-split"
+    },
+    "testimonials": {
+      "type": "testimonials"
+    }
+  },
+  "order": ["hero", "categories", "main", "service_banner", "promo_split", "testimonials"]
+}

@@ -1,0 +1,211 @@
+<section class="hero">
+  {%- comment -%} <img class="hero__bg" src="{{ 'hero.jpg' | asset_url }}" alt="" width="1600" loading="eager" height="700"> {%- endcomment -%}
+  {%- comment -%} <img class="hero__bg" src="{{ 'hero-2.jpg' | asset_url }}" alt="" width="3701" loading="eager" height="2788"> {%- endcomment -%}
+  {%- comment -%} <img class="hero__bg" src="{{ 'hero-3.jpg' | asset_url }}" alt="" width="1440" loading="eager" height="1080"> {%- endcomment -%}
+  <img class="hero__bg" src="{{ 'hero-4.png' | asset_url }}" alt="" width="1672" loading="eager" height="941">
+  <div class="hero__overlay"></div>
+  <div class="hero__content">
+    <div class="hero__inner">
+      <h1 class="hero__title hero__fade-in" style="animation-delay: 0.1s;">{{ section.settings.title_part1 }}<span class="hero__title-divider"></span>{{ section.settings.title_part2 }}</h1>
+      <div class="hero__divider hero__fade-in" style="animation-delay: 0.25s;">
+        <span class="hero__divider-line"></span>
+      </div>
+      <p class="hero__subtitle hero__fade-in" style="animation-delay: 0.35s;">{{ section.settings.subtitle }}</p>
+      <a href="/collections/all" class="hero__btn hero__fade-in" style="animation-delay: 0.45s;">
+        <span class="hero__btn-text">{{ section.settings.button_text }}</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .hero {
+    position: relative;
+    min-height: 90vh;
+    padding-bottom: var(--space-9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
+  }
+
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 80%;
+  }
+
+  .hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.45));
+  }
+
+  .hero__content {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    text-align: left;
+    color: #fff;
+    width: 100%;
+    max-width: 1100px;
+    box-sizing: border-box;
+    margin: 0 auto;
+    padding: 0;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .hero__inner {
+    display: inline-block;
+    text-align: left;
+  }
+
+  .hero__title {
+    font-size: 64px;
+    line-height: 1.1;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: -0.015em;
+    word-spacing: -0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    margin: 0;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  .hero__title-divider {
+    display: inline-block;
+    width: 2px;
+    height: 0.72em;
+    background: rgba(255, 255, 255, 0.6);
+    margin: 0 var(--space-4);
+    vertical-align: middle;
+  }
+
+  .hero__fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: hero-fade-in 0.7s ease forwards;
+  }
+
+  @keyframes hero-fade-in {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero__divider {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin: var(--space-5) 0;
+    width: 100%;
+  }
+
+  .hero__divider-line {
+    flex: 1;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.5);
+  }
+
+  .hero__divider-icon {
+    display: inline-flex;
+    color: #fff;
+  }
+
+  .hero__subtitle {
+    font-size: var(--font-size-5);
+    font-weight: var(--font-weight-medium);
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.5;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 var(--space-6);
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  .hero__btn {
+    position: relative;
+    display: block;
+    width: fit-content;
+    margin: 0 auto;
+    overflow: hidden;
+    background: #fff;
+    color: #000;
+    text-decoration: none;
+    padding: var(--space-3) var(--space-7);
+    border-radius: var(--radius-full);
+    border-bottom: 3px solid var(--color-accent);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-3);
+  }
+
+  .hero__btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--color-accent);
+    clip-path: polygon(0% 100%, 0% 100%, 0% 100%, 0% 100%);
+    transition: clip-path 0.3s ease;
+  }
+
+  .hero__btn:hover::before {
+    clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%);
+  }
+
+  .hero__btn-text {
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s ease;
+  }
+
+  .hero__btn:hover .hero__btn-text {
+    color: #fff;
+  }
+
+  @media (max-width: 900px) {
+    .hero__title {
+      font-size: var(--font-size-8);
+    }
+
+    .hero {
+      min-height: 380px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero {
+      min-height: 340px;
+    }
+
+    .hero__title {
+      font-size: var(--font-size-7);
+    }
+
+    .hero__subtitle {
+      font-size: var(--font-size-3);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    { "type": "text", "id": "title_part1", "label": "Title — part 1", "default": "PREMIUM GEAR" },
+    { "type": "text", "id": "title_part2", "label": "Title — part 2", "default": "EXPERT SERVICE" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Your trusted cycling hub since 2017" },
+    { "type": "text", "id": "button_text", "label": "Button text", "default": "Shop Now" }
+  ],
+  "presets": [
+    { "name": "Hero" }
+  ]
+}
+{% endschema %}

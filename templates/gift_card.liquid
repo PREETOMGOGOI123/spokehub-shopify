@@ -1,0 +1,4 @@
+<h1>Your Gift Card</h1>
+<p>{{ gift_card.balance | money }}</p>
+<img src="{{ gift_card.qr_identifier }}" width="120" height="120" alt="Gift card QR code">
+<p>Code: {{ gift_card.code | format_code }}</p>

@@ -1,0 +1,11 @@
+<div class="card">
+  <div class="card__img">
+    <img src="{{ image | asset_url }}" alt="{{ title }}" loading="lazy">
+  </div>
+  <div class="card__body">
+    <h3 class="card__title">{{ title }}</h3>
+    {% if price != blank %}
+      <p class="card__price">{{ price }}</p>
+    {% endif %}
+  </div>
+</div>

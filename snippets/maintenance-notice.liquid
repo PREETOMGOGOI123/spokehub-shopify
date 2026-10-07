@@ -1,0 +1,105 @@
+<div class="maintenance-notice" id="maintenance-notice">
+  <div class="maintenance-notice__backdrop"></div>
+  <div class="maintenance-notice__dialog" role="dialog" aria-modal="true" aria-labelledby="maintenance-notice-title">
+    <h2 id="maintenance-notice-title" class="maintenance-notice__title">Site Under Maintenance</h2>
+    <p class="maintenance-notice__text">
+      We're currently updating our store. Products shown here are not available for purchase at this time. Thank you for your patience.
+    </p>
+    <label class="maintenance-notice__checkbox">
+      <input type="checkbox" id="maintenance-notice-check">
+      I understand
+    </label>
+    <button type="button" id="maintenance-notice-ok" class="maintenance-notice__ok" disabled>OK</button>
+  </div>
+</div>
+
+<style>
+  .maintenance-notice {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .maintenance-notice__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  .maintenance-notice__dialog {
+    position: relative;
+    background: #fff;
+    color: var(--color-text);
+    max-width: 420px;
+    width: calc(100% - var(--space-5) * 2);
+    padding: var(--space-6);
+    border-radius: var(--radius-4);
+    box-shadow: var(--shadow-4);
+    text-align: left;
+  }
+
+  .maintenance-notice__title {
+    margin: 0 0 var(--space-3);
+    font-size: var(--font-size-5);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .maintenance-notice__text {
+    margin: 0 0 var(--space-5);
+    font-size: var(--font-size-2);
+    line-height: 1.5;
+    color: var(--color-muted);
+  }
+
+  .maintenance-notice__checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-2);
+    margin-bottom: var(--space-5);
+    cursor: pointer;
+  }
+
+  .maintenance-notice__ok {
+    width: 100%;
+    padding: var(--space-3);
+    background: var(--color-accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-full);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-3);
+    cursor: pointer;
+    transition: background 0.2s ease, opacity 0.2s ease;
+  }
+
+  .maintenance-notice__ok:hover:not(:disabled) {
+    background: var(--color-accent-hover);
+  }
+
+  .maintenance-notice__ok:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>
+
+<script>
+  (function () {
+    var notice = document.getElementById('maintenance-notice');
+    var checkbox = document.getElementById('maintenance-notice-check');
+    var okBtn = document.getElementById('maintenance-notice-ok');
+    if (!notice || !checkbox || !okBtn) return;
+
+    checkbox.addEventListener('change', function () {
+      okBtn.disabled = !checkbox.checked;
+    });
+
+    okBtn.addEventListener('click', function () {
+      if (!checkbox.checked) return;
+      notice.remove();
+    });
+  })();
+</script>

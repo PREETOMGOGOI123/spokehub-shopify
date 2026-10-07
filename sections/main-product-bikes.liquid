@@ -1,0 +1,955 @@
+<nav class="product-bikes__breadcrumb" aria-label="Breadcrumb">
+  <a href="{{ routes.root_url }}">Home</a>
+  {% if collection %}
+    <span>/</span>
+    <a href="{{ collection.url }}">{{ collection.title }}</a>
+  {% elsif product.collections.first %}
+    <span>/</span>
+    <a href="{{ product.collections.first.url }}">{{ product.collections.first.title }}</a>
+  {% endif %}
+  <span>/</span>
+  <span class="product-bikes__breadcrumb-current">{{ product.title }}</span>
+</nav>
+
+<div class="product-bikes">
+  <!-- Gallery -->
+  <div class="product-bikes__gallery">
+    <div class="product-bikes__thumbs">
+      {% for image in product.images %}
+        <button type="button" class="product-bikes__thumb" data-full="{{ image | image_url: width: 1200 }}">
+          <img src="{{ image | image_url: width: 200 }}" width="200" height="200" alt="{{ product.title }}">
+        </button>
+      {% endfor %}
+    </div>
+    <div class="product-bikes__main">
+      {% if product.featured_image %}
+        <img id="bike-main-img"
+          src="{{ product.featured_image | image_url: width: 800 }}"
+          width="800"
+          height="{{ 800 | divided_by: product.featured_image.aspect_ratio }}"
+          alt="{{ product.title }}">
+      {% endif %}
+      <button type="button" class="product-bikes__main-nav product-bikes__main-nav--prev" id="bike-main-prev" aria-label="Previous image">&larr;</button>
+      <button type="button" class="product-bikes__main-nav product-bikes__main-nav--next" id="bike-main-next" aria-label="Next image">&rarr;</button>
+    </div>
+  </div>
+
+  <!-- Lightbox overlay -->
+  <div class="product-bikes__lightbox" id="bike-lightbox" hidden>
+    <button type="button" class="product-bikes__lightbox-close" id="bike-lightbox-close" aria-label="Close">&times;</button>
+    <button type="button" class="product-bikes__lightbox-nav product-bikes__lightbox-nav--prev" id="bike-lightbox-prev" aria-label="Previous image">&larr;</button>
+    <img id="bike-lightbox-img" src="" alt="{{ product.title }}">
+    <button type="button" class="product-bikes__lightbox-nav product-bikes__lightbox-nav--next" id="bike-lightbox-next" aria-label="Next image">&rarr;</button>
+    <div class="product-bikes__lightbox-thumbs" id="bike-lightbox-thumbs">
+      {% for image in product.images %}
+        <button type="button" class="product-bikes__lightbox-thumb" data-full="{{ image | image_url: width: 2000 }}">
+          <img src="{{ image | image_url: width: 150 }}" width="150" height="150" alt="{{ product.title }}">
+        </button>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Info -->
+  <div class="product-bikes__info">
+    <h1 class="product-bikes__title">{{ product.title }}</h1>
+    <p class="product-bikes__price" id="bike-price">{{ product.price | money }}</p>
+
+    {% if product.available %}
+      <p class="product-bikes__stock product-bikes__stock--in" id="bike-stock">In stock</p>
+    {% else %}
+      <p class="product-bikes__stock product-bikes__stock--out" id="bike-stock">Sold out</p>
+    {% endif %}
+
+    <!-- Description (accordion) -->
+    {% if product.description != blank %}
+      <div class="product-bikes__accordion">
+        <input type="checkbox" id="desc-toggle" class="product-bikes__acc-check">
+        <label for="desc-toggle" class="product-bikes__acc-head">
+          <span>Learn more about this bike</span>
+          <svg class="product-bikes__acc-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </label>
+        <div class="product-bikes__acc-body">
+          <div class="product-bikes__desc">{{ product.description }}</div>
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Quick specs -->
+    {% assign quick = product.metafields.custom.quick_specs.value %}
+    {% if quick %}
+      <div class="product-bikes__quickspecs">
+        {% for pair in quick %}
+          {% assign spec = pair[1] %}
+          <div class="product-bikes__quickspec">
+            <span class="product-bikes__quickspec-icon">{% render 'spec-icon', icon: spec.icon %}</span>
+            <div>
+              <span class="product-bikes__quickspec-label">{{ spec.label }}</span>
+              <span class="product-bikes__quickspec-value">{{ spec.value }}</span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Features -->
+    {% assign features = product.metafields.custom.features.value %}
+    {% if features %}
+      <div class="product-bikes__features">
+        <input type="checkbox" id="features-toggle" class="product-bikes__features-check">
+        <ul class="product-bikes__features-list">
+          {% for feature in features %}
+            <li class="product-bikes__feature-card">
+              <span>{{ feature }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+        {% if features.size > 3 %}
+          <label for="features-toggle" class="product-bikes__features-more">
+            <span class="product-bikes__features-more-open">See more</span>
+            <span class="product-bikes__features-more-close">See less</span>
+            <svg class="product-bikes__features-more-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </label>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <!-- Buy: size / color / add-to-cart -->
+    {% form 'product', product %}
+      {% unless product.has_only_default_variant %}
+        {% for option in product.options_with_values %}
+          {% if option.name == 'Wheel Size' %}{% continue %}{% endif %}
+          {% assign is_color = false %}
+          {% if option.name == 'Color' or option.name == 'Colour' %}{% assign is_color = true %}{% endif %}
+          <div class="product-bikes__option">
+            <label class="product-bikes__option-label">
+              {{ option.name }}{% if is_color %} <span class="product-bikes__option-selected" id="bike-color-name">/ {{ option.selected_value }}</span>{% endif %}
+            </label>
+            <div class="product-bikes__values{% if is_color %} product-bikes__values--color{% endif %}">
+              {% for value in option.values %}
+                <label class="product-bikes__swatch{% if is_color %} product-bikes__swatch--color{% endif %}">
+                  <input type="radio"
+                    name="options[{{ option.name }}]"
+                    value="{{ value }}"
+                    {% if option.selected_value == value %}checked{% endif %}>
+                  {% if is_color %}
+                    {% assign color_key = value | downcase | strip %}
+                    {% case color_key %}
+                      {% when 'mango' %}{% assign hex = '#F5A623' %}
+                      {% when 'graphite' %}{% assign hex = '#3A3A3A' %}
+                      {% when 'black' %}{% assign hex = '#111111' %}
+                      {% when 'white' %}{% assign hex = '#F2F2F2' %}
+                      {% when 'red' %}{% assign hex = '#D32F2F' %}
+                      {% when 'blue' %}{% assign hex = '#1E5FCC' %}
+                      {% when 'green' %}{% assign hex = '#2E7D32' %}
+                      {% when 'yellow' %}{% assign hex = '#F6C400' %}
+                      {% when 'grey', 'gray' %}{% assign hex = '#8A8A8A' %}
+                      {% when 'silver' %}{% assign hex = '#C0C0C0' %}
+                      {% when 'orange' %}{% assign hex = '#F57C00' %}
+                      {% when 'purple' %}{% assign hex = '#7B1FA2' %}
+                      {% else %}{% assign hex = '#CCCCCC' %}
+                    {% endcase %}
+                    <span class="product-bikes__color-dot" style="background: {{ hex }};" title="{{ value }}"></span>
+                  {% else %}
+                    <span>{{ value }}</span>
+                  {% endif %}
+                </label>
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      {% endunless %}
+
+      <input type="hidden" name="id" id="bike-variant-id" value="{{ product.selected_or_first_available_variant.id }}">
+
+      <div class="product-bikes__buttons">
+        {% if product.available %}
+          {{ form | payment_button }}
+        {% endif %}
+        <button type="submit" name="add" class="product-bikes__add" id="bike-add"
+          {% unless product.available %}disabled{% endunless %}>
+          {% if product.available %}Add to cart{% else %}Sold out{% endif %}
+        </button>
+      </div>
+    {% endform %}
+  </div>
+</div>
+
+<!-- Specs (full width, collapsible) -->
+{% assign specs = product.metafields.custom.specs.value %}
+{% if specs %}
+  <div class="product-bikes__specs-wrap">
+    <h2 class="product-bikes__specs-title">Specifications</h2>
+    <input type="checkbox" id="specs-toggle" class="product-bikes__specs-check">
+    <dl class="product-bikes__specs">
+      {% for pair in specs %}
+        <div class="product-bikes__spec">
+          <dt class="product-bikes__spec-key">{{ pair[0] }}</dt>
+          <dd class="product-bikes__spec-val">{{ pair[1] }}</dd>
+        </div>
+      {% endfor %}
+    </dl>
+    <label for="specs-toggle" class="product-bikes__specs-more">
+      <span class="product-bikes__specs-more-open">See more</span>
+      <span class="product-bikes__specs-more-close">See less</span>
+      <svg class="product-bikes__specs-more-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+    </label>
+  </div>
+{% endif %}
+
+<script>
+  (function () {
+    var variants = {{ product.variants | json }};
+    var optionNames = {{ product.options | json }};
+    var form = document.querySelector('.product-bikes__info form');
+    if (!form) return;
+
+    var idField = document.getElementById('bike-variant-id');
+    var priceEl = document.getElementById('bike-price');
+    var stockEl = document.getElementById('bike-stock');
+    var addBtn  = document.getElementById('bike-add');
+    var mainImg = document.getElementById('bike-main-img');
+    var colorNameEl = document.getElementById('bike-color-name');
+
+    function updateColorName() {
+      if (!colorNameEl) return;
+      var checked = form.querySelector('input[name="options[Color]"]:checked')
+                 || form.querySelector('input[name="options[Colour]"]:checked');
+      if (checked) colorNameEl.textContent = '/ ' + checked.value;
+    }
+
+    function money(cents) {
+      return '₹' + (cents / 100).toLocaleString('en-IN');
+    }
+
+    function norm(s) {
+      return (s == null ? '' : String(s)).trim().toLowerCase();
+    }
+
+    function selectedOptions() {
+      return [].map.call(
+        form.querySelectorAll('input[type="radio"]:checked'),
+        function (r) { return norm(r.value); }
+      );
+    }
+
+    // Order-independent match: a variant matches when every selected value
+    // is present in that variant's options.
+    function findVariant(selected) {
+      return variants.find(function (v) {
+        var opts = v.options.map(norm);
+        return selected.every(function (val) {
+          return opts.indexOf(val) !== -1;
+        });
+      });
+    }
+
+    function firstAvailable() {
+      return variants.find(function (v) { return v.available; }) || variants[0];
+    }
+
+    function update() {
+      // Try to match the picked swatches; if no exact match (e.g. an option
+      // has no corresponding variant), fall back to the first available variant
+      // so an in-stock product always offers "Add to cart".
+      var variant = findVariant(selectedOptions()) || firstAvailable();
+      if (!variant) {
+        idField.value = '';
+        addBtn.disabled = true;
+        addBtn.textContent = 'Unavailable';
+        return;
+      }
+      idField.value = variant.id;
+      if (priceEl) priceEl.textContent = money(variant.price);
+      if (variant.available) {
+        addBtn.disabled = false;
+        addBtn.textContent = 'Add to cart';
+        if (stockEl) {
+          stockEl.textContent = 'In stock';
+          stockEl.className = 'product-bikes__stock product-bikes__stock--in';
+        }
+      } else {
+        addBtn.disabled = true;
+        addBtn.textContent = 'Sold out';
+        if (stockEl) {
+          stockEl.textContent = 'Sold out';
+          stockEl.className = 'product-bikes__stock product-bikes__stock--out';
+        }
+      }
+      if (mainImg && variant.featured_image) {
+        mainImg.src = variant.featured_image.src;
+      }
+    }
+
+    form.querySelectorAll('input[type="radio"]').forEach(function (input) {
+      input.addEventListener('change', function () {
+        update();
+        updateColorName();
+      });
+    });
+    update();
+    updateColorName();
+
+    // Thumbnail -> main image swap
+    var currentImageIndex = 0;
+    var galleryThumbs = document.querySelectorAll('.product-bikes__thumb');
+    galleryThumbs.forEach(function (thumb, i) {
+      thumb.addEventListener('click', function () {
+        if (mainImg) mainImg.src = thumb.getAttribute('data-full');
+        currentImageIndex = i;
+      });
+    });
+
+    function showMainImage(index) {
+      if (!galleryThumbs.length || !mainImg) return;
+      currentImageIndex = (index + galleryThumbs.length) % galleryThumbs.length;
+      mainImg.src = galleryThumbs[currentImageIndex].getAttribute('data-full');
+    }
+
+    var mainPrev = document.getElementById('bike-main-prev');
+    var mainNext = document.getElementById('bike-main-next');
+    if (mainPrev) mainPrev.addEventListener('click', function () { showMainImage(currentImageIndex - 1); });
+    if (mainNext) mainNext.addEventListener('click', function () { showMainImage(currentImageIndex + 1); });
+
+    // Lightbox: click main image -> fullscreen, with prev/next + thumbnails
+    var lightbox = document.getElementById('bike-lightbox');
+    var lightboxImg = document.getElementById('bike-lightbox-img');
+    var lightboxClose = document.getElementById('bike-lightbox-close');
+    var lightboxPrev = document.getElementById('bike-lightbox-prev');
+    var lightboxNext = document.getElementById('bike-lightbox-next');
+    var lightboxThumbs = document.querySelectorAll('.product-bikes__lightbox-thumb');
+    var lightboxIndex = 0;
+
+    function showLightboxImage(index) {
+      if (!lightboxThumbs.length) return;
+      lightboxIndex = (index + lightboxThumbs.length) % lightboxThumbs.length;
+      var thumb = lightboxThumbs[lightboxIndex];
+      lightboxImg.src = thumb.getAttribute('data-full');
+      lightboxThumbs.forEach(function (t) { t.classList.remove('product-bikes__lightbox-thumb--active'); });
+      thumb.classList.add('product-bikes__lightbox-thumb--active');
+      currentImageIndex = lightboxIndex;
+      if (mainImg) mainImg.src = thumb.querySelector('img').getAttribute('src').replace(/width=\d+/, 'width=800');
+    }
+
+    function openLightbox() {
+      if (!mainImg || !lightbox) return;
+      showLightboxImage(currentImageIndex);
+      lightbox.hidden = false;
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      if (!lightbox) return;
+      lightbox.hidden = true;
+      document.body.style.overflow = '';
+    }
+
+    if (mainImg) mainImg.addEventListener('click', openLightbox);
+    if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+    if (lightboxImg) lightboxImg.addEventListener('click', closeLightbox);
+    if (lightboxPrev) lightboxPrev.addEventListener('click', function () { showLightboxImage(lightboxIndex - 1); });
+    if (lightboxNext) lightboxNext.addEventListener('click', function () { showLightboxImage(lightboxIndex + 1); });
+    lightboxThumbs.forEach(function (thumb, i) {
+      thumb.addEventListener('click', function () { showLightboxImage(i); });
+    });
+    if (lightbox) {
+      lightbox.addEventListener('click', function (e) {
+        if (e.target === lightbox) closeLightbox();
+      });
+    }
+    document.addEventListener('keydown', function (e) {
+      if (lightbox && lightbox.hidden) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') showLightboxImage(lightboxIndex - 1);
+      if (e.key === 'ArrowRight') showLightboxImage(lightboxIndex + 1);
+    });
+
+    // Keep the "Show more/less" button visually in place when the feature list
+    // collapses/expands, so the sticky gallery doesn't appear to jump.
+    var featuresToggle = document.getElementById('features-toggle');
+    var featuresLabel = document.querySelector('.product-bikes__features-more');
+    if (featuresToggle && featuresLabel) {
+      featuresToggle.addEventListener('change', function () {
+        var before = featuresLabel.getBoundingClientRect().top;
+        // Let the layout reflow, then restore the button's viewport position.
+        requestAnimationFrame(function () {
+          var after = featuresLabel.getBoundingClientRect().top;
+          window.scrollBy(0, after - before);
+        });
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product-Bikes",
+  "settings": []
+}
+{% endschema %}
+
+{% stylesheet %}
+  .product-bikes__breadcrumb {
+    padding: var(--space-4) max(var(--page-padding), (100% - var(--page-max)) / 2) 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-1);
+    color: var(--gray-11, #6b6b6b);
+    background: #fff;
+  }
+  .product-bikes__breadcrumb a {
+    color: var(--gray-11, #6b6b6b);
+    text-decoration: none;
+  }
+  .product-bikes__breadcrumb a:hover {
+    color: var(--gray-12, #1a1a1a);
+    text-decoration: underline;
+  }
+  .product-bikes__breadcrumb-current {
+    color: var(--gray-12, #1a1a1a);
+  }
+
+  .product-bikes {
+    padding: var(--section-y) max(var(--page-padding), (100% - var(--page-max)) / 2);
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: var(--space-8);
+    align-items: start;
+    background: #fff;
+  }
+  .product-bikes > * {
+    min-width: 0;
+  }
+
+  /* Gallery — main on top, thumbs below; sticks while info column scrolls */
+  .product-bikes__gallery {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    position: sticky;
+    top: calc(156px + var(--space-3));
+    align-self: start;
+    min-width: 0;
+  }
+  .product-bikes__main { order: 1; }
+  .product-bikes__thumbs { order: 2; }
+  .product-bikes__main {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    max-height: calc(100vh - 220px);
+    background: #fff;
+    border-radius: var(--radius-4);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.10);
+    overflow: hidden;
+  }
+  .product-bikes__main img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: var(--space-5);
+    box-sizing: border-box;
+    cursor: zoom-in;
+  }
+  .product-bikes__main-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--gray-6, #ddd);
+    border-radius: 0;
+    background: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-4);
+    z-index: 2;
+  }
+  .product-bikes__main-nav--prev { left: var(--space-4); }
+  .product-bikes__main-nav--next { right: var(--space-4); }
+  .product-bikes__thumbs {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: var(--space-3);
+    overflow-x: auto;
+    scroll-behavior: smooth;
+  }
+  .product-bikes__thumb {
+    flex: 0 0 auto;
+    width: 140px;
+    height: 140px;
+    border: 1px solid var(--gray-6, #ddd);
+    border-radius: var(--radius-3);
+    overflow: hidden;
+    background: #fff;
+    cursor: pointer;
+    padding: 2px;
+    box-sizing: border-box;
+  }
+  .product-bikes__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* Lightbox */
+  .product-bikes__lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    background: rgba(255, 255, 255, 0.92);
+    padding: var(--space-4);
+  }
+  .product-bikes__lightbox[hidden] { display: none; }
+  .product-bikes__lightbox img {
+    max-width: 96vw;
+    max-height: 82vh;
+    object-fit: contain;
+    cursor: zoom-out;
+  }
+  .product-bikes__lightbox-close {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-5);
+    background: none;
+    border: none;
+    color: var(--gray-12);
+    font-size: 2.5rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .product-bikes__lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--gray-6, #ddd);
+    border-radius: 0;
+    background: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-4);
+  }
+  .product-bikes__lightbox-nav--prev { left: var(--space-5); }
+  .product-bikes__lightbox-nav--next { right: var(--space-5); }
+  .product-bikes__lightbox-thumbs {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-3);
+    overflow-x: auto;
+    max-width: 90vw;
+    padding: var(--space-2);
+  }
+  .product-bikes__lightbox-thumb {
+    flex: 0 0 auto;
+    width: 80px;
+    height: 80px;
+    border: 2px solid transparent;
+    border-radius: var(--radius-3);
+    overflow: hidden;
+    background: #fff;
+    cursor: pointer;
+    padding: var(--space-1);
+    box-sizing: border-box;
+  }
+  .product-bikes__lightbox-thumb--active {
+    border-color: var(--red-9, #e5484d);
+  }
+  .product-bikes__lightbox-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* Info */
+  .product-bikes__vendor {
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: var(--font-size-2);
+    margin: 0 0 var(--space-2);
+  }
+  .product-bikes__title {
+    font-size: var(--font-size-8);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.15;
+    margin: 0 0 var(--space-4);
+  }
+  .product-bikes__price {
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: var(--font-size-2);
+    font-weight: var(--font-weight-regular);
+    margin: 0 0 var(--space-3);
+  }
+  .product-bikes__stock {
+    font-size: var(--font-size-2);
+    font-weight: var(--font-weight-medium);
+    margin: 0 0 var(--space-5);
+  }
+  .product-bikes__stock--in { color: #2e7d32; }
+  .product-bikes__stock--out { color: var(--color-muted); }
+
+  /* Size / Color options */
+  .product-bikes__option { margin-bottom: var(--space-5); }
+  .product-bikes__option-label {
+    display: block;
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-2);
+    margin-bottom: var(--space-3);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .product-bikes__option-selected {
+    color: var(--color-muted);
+    font-weight: var(--font-weight-regular);
+    text-transform: none;
+  }
+  .product-bikes__values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .product-bikes__swatch input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .product-bikes__swatch span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--gray-8);
+    border-radius: var(--radius-2);
+    cursor: pointer;
+    font-size: var(--font-size-2);
+    font-weight: var(--font-weight-medium);
+    transition: all 0.15s;
+  }
+  .product-bikes__swatch:not(.product-bikes__swatch--color) input:checked + span {
+    border-color: var(--gray-12);
+    border-width: 2px;
+    background: transparent;
+    color: var(--gray-12);
+  }
+
+  /* Color swatches as circles */
+  .product-bikes__swatch--color span,
+  .product-bikes__color-dot {
+    display: block;
+    width: 24px;
+    height: 24px;
+    min-width: 0;
+    padding: 0;
+    border-radius: 0;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .product-bikes__swatch--color input:checked + .product-bikes__color-dot {
+    transform: scale(1.25);
+  }
+
+  .product-bikes__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin: var(--space-4) 0 var(--space-6);
+  }
+  /* Add to cart = secondary (red outline) */
+  .product-bikes__add {
+    width: 100%;
+    background: transparent;
+    color: var(--color-accent);
+    border: 2px solid var(--color-accent);
+    padding: calc(var(--space-4) - 2px);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-3);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .product-bikes__add:hover:not(:disabled) {
+    background: var(--color-accent);
+    color: #fff;
+  }
+  .product-bikes__add:disabled {
+    border-color: var(--gray-8);
+    color: var(--gray-8);
+    cursor: not-allowed;
+  }
+
+  /* Buy it now = primary (Shopify payment button, forced to red pill) */
+  .product-bikes__buttons .shopify-payment-button {
+    order: -1;
+  }
+  .product-bikes__buttons .shopify-payment-button__button--unbranded {
+    background: var(--color-accent);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-3);
+    font-weight: var(--font-weight-bold);
+    padding: var(--space-4);
+    min-height: 0;
+  }
+  .product-bikes__buttons .shopify-payment-button__button--unbranded:hover:not([disabled]) {
+    background: var(--color-accent-hover);
+  }
+
+  /* Description */
+  .product-bikes__desc {
+    line-height: 1.6;
+    color: var(--gray-11);
+    margin: 0;
+  }
+
+  /* Description accordion */
+  .product-bikes__accordion {
+    border-bottom: 1px solid var(--color-border);
+    margin: var(--space-5) 0;
+  }
+  .product-bikes__acc-check {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .product-bikes__acc-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) 0;
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-3);
+    cursor: pointer;
+  }
+  .product-bikes__acc-chevron {
+    transition: transform 0.25s ease;
+    flex: 0 0 auto;
+  }
+  .product-bikes__acc-check:checked ~ .product-bikes__acc-head .product-bikes__acc-chevron {
+    transform: rotate(180deg);
+  }
+  .product-bikes__acc-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease;
+  }
+  .product-bikes__acc-check:checked ~ .product-bikes__acc-body {
+    grid-template-rows: 1fr;
+  }
+  .product-bikes__acc-body > * {
+    overflow: hidden;
+  }
+  .product-bikes__acc-body .product-bikes__desc {
+    padding-bottom: var(--space-4);
+  }
+
+  /* Quick specs (icon + label + value) */
+  .product-bikes__quickspecs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4) var(--space-5);
+    margin: var(--space-5) 0 var(--space-7);
+  }
+  .product-bikes__quickspec {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .product-bikes__quickspec-icon {
+    display: inline-flex;
+    color: #1E5FCC;
+    flex: 0 0 auto;
+  }
+  .product-bikes__quickspec-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+  .product-bikes__quickspec-label {
+    display: block;
+    font-size: var(--font-size-1);
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .product-bikes__quickspec-value {
+    display: block;
+    font-size: var(--font-size-3);
+    font-weight: var(--font-weight-medium);
+    color: var(--gray-12);
+  }
+
+  /* Features + Specs */
+  .product-bikes__specs-title {
+    font-size: var(--font-size-4);
+    font-weight: var(--font-weight-medium);
+    margin: 0 0 var(--space-3);
+  }
+  .product-bikes__features-check {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .product-bikes__features-list {
+    list-style: none;
+    margin: 0 0 var(--space-4);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  /* Feature collapse (See more) is mobile/tablet only — enabled in the media
+     query below. On desktop all cards show and the toggle stays hidden. */
+  .product-bikes__features-more {
+    display: none;
+    align-items: center;
+    gap: var(--space-1);
+    margin: 0 0 var(--space-6);
+    font-size: var(--font-size-2);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .product-bikes__features-more:hover {
+    color: var(--gray-12);
+  }
+  .product-bikes__features-more-chevron {
+    transition: transform 0.2s ease;
+  }
+  .product-bikes__features-check:checked ~ .product-bikes__features-more .product-bikes__features-more-chevron {
+    transform: rotate(180deg);
+  }
+  .product-bikes__features-more-close { display: none; }
+  .product-bikes__features-check:checked ~ .product-bikes__features-more .product-bikes__features-more-open { display: none; }
+  .product-bikes__features-check:checked ~ .product-bikes__features-more .product-bikes__features-more-close { display: inline; }
+  .product-bikes__feature-card {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    background: var(--gray-2);
+    border-radius: var(--radius-3);
+    padding: var(--space-4);
+    line-height: 1.5;
+    font-size: var(--font-size-2);
+    font-weight: var(--font-weight-medium);
+    color: var(--gray-12);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06),
+                0 3px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .product-bikes__feature-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08),
+                0 6px 10px rgba(0, 0, 0, 0.06);
+  }
+  /* Full-width collapsible specs */
+  .product-bikes__specs-wrap {
+    padding: 0 max(var(--page-padding), (100% - var(--page-max)) / 2) var(--section-y);
+    background: #fff;
+    margin-bottom: calc(-1 * var(--space-9));
+  }
+  .product-bikes__specs-check {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .product-bikes__specs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 var(--space-8);
+    margin: 0;
+    font-size: var(--font-size-2);
+    max-height: 300px;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
+    transition: max-height 0.3s ease;
+  }
+  .product-bikes__specs-check:checked ~ .product-bikes__specs {
+    max-height: 3000px;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .product-bikes__spec {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .product-bikes__spec-key {
+    color: var(--color-muted);
+    font-weight: var(--font-weight-medium);
+  }
+  .product-bikes__spec-val {
+    margin: 0;
+    color: var(--gray-12);
+    text-align: right;
+  }
+  .product-bikes__specs-more {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-top: var(--space-4);
+    font-size: var(--font-size-2);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .product-bikes__specs-more:hover {
+    color: var(--gray-12);
+  }
+  .product-bikes__specs-more-chevron {
+    transition: transform 0.2s ease;
+  }
+  .product-bikes__specs-check:checked ~ .product-bikes__specs-more .product-bikes__specs-more-chevron {
+    transform: rotate(180deg);
+  }
+  .product-bikes__specs-more-close { display: none; }
+  .product-bikes__specs-check:checked ~ .product-bikes__specs-more .product-bikes__specs-more-open { display: none; }
+  .product-bikes__specs-check:checked ~ .product-bikes__specs-more .product-bikes__specs-more-close { display: inline; }
+
+  @media (max-width: 1000px) {
+    .product-bikes { grid-template-columns: 1fr; gap: var(--space-5); }
+    .product-bikes__title { font-size: var(--font-size-7); }
+    .product-bikes__specs { grid-template-columns: 1fr; }
+    .product-bikes__gallery { position: static; }
+    .product-bikes__main { max-height: none; }
+    .product-bikes__thumb { width: 100px; height: 100px; }
+    .product-bikes__main-nav { width: 36px; height: 36px; }
+    .product-bikes__breadcrumb { font-size: var(--font-size-0); }
+
+    /* Collapse features to first 3 with a See more toggle (mobile/tablet only) */
+    .product-bikes__feature-card:nth-child(n+4) {
+      display: none;
+    }
+    .product-bikes__features-check:checked ~ .product-bikes__features-list .product-bikes__feature-card:nth-child(n+4) {
+      display: flex;
+    }
+    .product-bikes__features-more {
+      display: inline-flex;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .product-bikes__breadcrumb { flex-wrap: wrap; }
+    .product-bikes__thumb { width: 80px; height: 80px; }
+    .product-bikes__lightbox-thumb { width: 60px; height: 60px; }
+    .product-bikes__lightbox-nav { width: 36px; height: 36px; }
+    .product-bikes__lightbox-nav--prev { left: var(--space-2); }
+    .product-bikes__lightbox-nav--next { right: var(--space-2); }
+  }
+{% endstylesheet %}
