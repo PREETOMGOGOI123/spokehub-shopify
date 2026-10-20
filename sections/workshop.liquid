@@ -1,0 +1,238 @@
+<section id="workshop" class="workshop">
+  <div class="workshop__inner">
+    <div class="workshop__copy">
+      {%- if section.settings.eyebrow != blank -%}
+        <div class="workshop__eyebrow">{{ section.settings.eyebrow }}</div>
+      {%- endif -%}
+      <h2 class="workshop__title">{{ section.settings.heading }}</h2>
+      {%- if section.settings.text != blank -%}
+        <p class="workshop__text">{{ section.settings.text }}</p>
+      {%- endif -%}
+
+      <div class="workshop__steps">
+        {%- assign step_no = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'step' -%}
+            {%- assign step_no = step_no | plus: 1 -%}
+            <div class="workshop__step" {{ block.shopify_attributes }}>
+              <div class="workshop__step-no">{% if step_no < 10 %}0{% endif %}{{ step_no }}</div>
+              <div class="workshop__step-title">{{ block.settings.title }}</div>
+              <div class="workshop__step-text">{{ block.settings.text }}</div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      <div class="workshop__buttons">
+        {%- if section.settings.button_text != blank -%}
+          <a href="{{ section.settings.button_link | default: routes.root_url }}" class="r-btn r-btn--lg r-btn--accent">{{ section.settings.button_text }}</a>
+        {%- endif -%}
+        {%- if section.settings.button2_text != blank -%}
+          <a href="{{ section.settings.button2_link | default: routes.root_url }}" class="r-btn r-btn--lg r-btn--outline-light">{{ section.settings.button2_text }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="workshop__side">
+      <div class="workshop__media{% if section.settings.image != blank %} workshop__media--image{% endif %}">
+        {%- if section.settings.image != blank -%}
+          {{ section.settings.image | image_url: width: 1000 | image_tag: class: 'workshop__img', alt: '', loading: 'lazy', sizes: '(min-width: 1280px) 600px, 100vw', widths: '500, 800, 1000' }}
+        {%- else -%}
+          PHOTO / SHORT CLIP · real mechanic at your stand (replace the stock video)
+        {%- endif -%}
+      </div>
+
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'service' -%}
+          <div class="workshop__service" {{ block.shopify_attributes }}>
+            <div>
+              <div class="workshop__service-name">{{ block.settings.name }}</div>
+              <div class="workshop__service-what">{{ block.settings.what }}</div>
+            </div>
+            <div class="workshop__service-price">{{ block.settings.price }}</div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .workshop {
+    margin-top: clamp(4.8rem, 7vw, 8.8rem);
+    background: #141414;
+    color: #fff;
+  }
+
+  .workshop__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4.8rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: clamp(5.6rem, 8vw, 9.6rem) clamp(1.6rem, 4vw, 4rem);
+  }
+
+  .workshop__copy {
+    flex: 1 1 420px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .workshop__eyebrow {
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: #bdbdbd;
+  }
+
+  .workshop__title {
+    margin: 0;
+    font-family: var(--font-family-heading);
+    font-weight: 800;
+    font-size: clamp(4rem, 5vw, 6.4rem);
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+
+  .workshop__text {
+    margin: 0;
+    max-width: 48rem;
+    font-size: 1.7rem;
+    color: #ccc;
+  }
+
+  .workshop__steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.2rem;
+    margin-top: 0.8rem;
+  }
+
+  .workshop__step {
+    padding-top: 1.2rem;
+    border-top: 2px solid var(--color-accent);
+  }
+
+  .workshop__step-no {
+    font-family: var(--font-family-heading);
+    font-weight: 800;
+    font-size: 2.8rem;
+  }
+
+  .workshop__step-title {
+    font-weight: 600;
+  }
+
+  .workshop__step-text {
+    font-size: 1.4rem;
+    color: #bdbdbd;
+  }
+
+  .workshop__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    margin-top: 0.8rem;
+  }
+
+  .workshop__side {
+    flex: 1 1 420px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .workshop__media {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: 200px;
+    box-sizing: border-box;
+    padding: 1.6rem;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #262626;
+    color: #ababab;
+    font-size: 1.3rem;
+  }
+
+  .workshop__media--image {
+    min-height: 260px;
+    padding: 0;
+  }
+
+  .workshop__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .workshop__service {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.6rem;
+    padding: 1.6rem 1.8rem;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: #1e1e1e;
+  }
+
+  .workshop__service-name {
+    font-weight: 700;
+  }
+
+  .workshop__service-what {
+    font-size: 1.4rem;
+    color: #bdbdbd;
+  }
+
+  .workshop__service-price {
+    font-weight: 700;
+    white-space: nowrap;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Workshop",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "THE WORKSHOP · BORBARI, GUWAHATI" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Your bike, done properly" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Trained mechanics and genuine Shimano parts. Tell us what's wrong on WhatsApp, drop the bike off, and we'll call you when it's ready." },
+    { "type": "text", "id": "button_text", "label": "Primary button text", "default": "Book a service" },
+    { "type": "url", "id": "button_link", "label": "Primary button link" },
+    { "type": "text", "id": "button2_text", "label": "Secondary button text", "default": "Full price list" },
+    { "type": "url", "id": "button2_link", "label": "Secondary button link" },
+    { "type": "image_picker", "id": "image", "label": "Photo", "info": "A real mechanic at the stand." }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Book on WhatsApp" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Pick a service and a day" }
+      ]
+    },
+    {
+      "type": "service",
+      "name": "Service",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "Basic tune-up" },
+        { "type": "text", "id": "what", "label": "What's included", "default": "Gears, brakes, safety check" },
+        { "type": "text", "id": "price", "label": "Price", "default": "₹[PRICE]" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Workshop" }
+  ]
+}
+{% endschema %}

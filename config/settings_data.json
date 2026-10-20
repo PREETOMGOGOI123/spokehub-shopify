@@ -1,3 +1,41 @@
 {
-  "current": {}
+  "current": {
+    "sections": {
+      "footer": {
+        "type": "footer",
+        "blocks": {
+          "b1": {
+            "type": "column",
+            "settings": {
+              "title": "Shop",
+              "links": "Bikes | /collections/bikes\nParts & spares | /collections/mtb-spares\nHelmets | /collections/helmets\nShoes | /collections/road-bikes\nSale | /collections/all"
+            }
+          },
+          "b2": {
+            "type": "column",
+            "settings": {
+              "title": "Help",
+              "links": "Shipping | /policies/shipping-policy\nReturns | /policies/refund-policy\nWarranty | /pages/warranty\nSize guides | /pages/size-guides\nContact | /pages/contact"
+            }
+          },
+          "b3": {
+            "type": "column",
+            "settings": {
+              "title": "Spokehub",
+              "links": "About us | /pages/about\nBuying guide | /pages/buying-guide\nWhatsApp | https://wa.me/919038065012\nInstagram | https://www.instagram.com/\nYouTube | https://www.youtube.com/"
+            }
+          }
+        },
+        "block_order": [
+          "b1",
+          "b2",
+          "b3"
+        ],
+        "settings": {
+          "signup_title": "Get new arrivals and offers first",
+          "signup_text": "One WhatsApp message a week. No spam."
+        }
+      }
+    }
+  }
 }

@@ -1,0 +1,85 @@
+<section class="brands r-section">
+  <div class="r-eyebrow brands__label">{{ section.settings.label }}</div>
+  <div class="brands__grid">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        if block.settings.link != blank
+          assign brand_url = block.settings.link
+        else
+          assign brand_q = block.settings.name | url_encode
+          assign brand_url = routes.search_url | append: '?q=' | append: brand_q
+        endif
+      -%}
+      <a href="{{ brand_url }}" class="brand" {{ block.shopify_attributes }}>{{ block.settings.name }}</a>
+    {%- endfor -%}
+  </div>
+  {%- if section.settings.note != blank -%}
+    <div class="brands__note">{{ section.settings.note }}</div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .brands {
+    padding-top: clamp(4.8rem, 7vw, 8rem);
+  }
+
+  .brands__label {
+    margin-bottom: 1.6rem;
+  }
+
+  .brands__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 72px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-family-heading);
+    font-weight: 700;
+    font-size: 2.2rem;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .brand:hover {
+    border-color: var(--color-ink);
+  }
+
+  .brands__note {
+    margin-top: 0.8rem;
+    font-size: 1.3rem;
+    color: #5c5c5c;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Brands",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Label", "default": "BRANDS WE STOCK" },
+    { "type": "text", "id": "note", "label": "Note under the tiles", "info": "Leave empty to hide." }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Brand",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "Polygon" },
+        { "type": "url", "id": "link", "label": "Link", "info": "Leave empty to search the store for this brand." }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Brands" }
+  ]
+}
+{% endschema %}

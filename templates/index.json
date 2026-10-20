@@ -1,23 +1,458 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
-      "type": "hero"
+      "type": "hero",
+      "settings": {
+        "button2_text": "Talk to an expert",
+        "button2_link": "https://wa.me/919038065012",
+        "text": "Bikes, parts and gear for riders across India. Built and tuned by our mechanics, then delivered to your door. Order online, or ask us anything on WhatsApp.",
+        "image": "shopify://shop_images/photo-1633707167682-9068729bc84c.jpg",
+        "heading": "Your next bike, delivered ready to ride"
+      }
     },
-    "categories": {
-      "type": "category-circles"
+    "trust_row": {
+      "type": "trust-row",
+      "blocks": {
+        "t1": {
+          "type": "item",
+          "settings": {
+            "icon": "shield",
+            "title": "Authorised Shimano dealer",
+            "text": "Genuine parts, proper warranty"
+          }
+        },
+        "t2": {
+          "type": "item",
+          "settings": {
+            "icon": "price",
+            "title": "Best price promise",
+            "text": "Found it cheaper? We'll match it"
+          }
+        },
+        "t3": {
+          "type": "item",
+          "settings": {
+            "icon": "returns",
+            "title": "Easy returns",
+            "text": "[RETURN WINDOW] days, no fuss"
+          }
+        },
+        "t4": {
+          "type": "item",
+          "settings": {
+            "icon": "wrench",
+            "title": "Workshop-assembled",
+            "text": "Every bike built and tuned in-house"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4"
+      ],
+      "settings": {}
     },
-    "main": {
-      "type": "featured-products"
+    "rides": {
+      "type": "ride-categories",
+      "blocks": {
+        "b1": {
+          "type": "ride",
+          "settings": {
+            "name": "MTB",
+            "blurb": "Hardtails and trail bikes for climbs, roots and rough descents.",
+            "photo_label": "TRAIL / HARDTAIL",
+            "link": "/collections/bikes",
+            "image": "shopify://shop_images/photo-1627044185459-09e6dbc39444.jpg"
+          }
+        },
+        "b2": {
+          "type": "ride",
+          "settings": {
+            "name": "Hybrid",
+            "blurb": "Comfortable, quick bikes for city commutes and weekend loops.",
+            "photo_label": "CITY RIDER",
+            "link": "/collections/bikes",
+            "image": "shopify://shop_images/photo-1577346895253-445f05a6670d.jpg"
+          }
+        },
+        "b3": {
+          "type": "ride",
+          "settings": {
+            "name": "Road",
+            "blurb": "Drop-bar bikes for long, fast miles on the highway.",
+            "photo_label": "ROAD / HIGHWAY",
+            "link": "/collections/bikes",
+            "image": "shopify://shop_images/photo-1534787238916-9ba6764efd4f.jpg"
+          }
+        },
+        "b4": {
+          "type": "pill",
+          "settings": {
+            "label": "Helmets",
+            "link": "/collections/helmets"
+          }
+        },
+        "b5": {
+          "type": "pill",
+          "settings": {
+            "label": "Shoes",
+            "link": "/collections/road-bikes"
+          }
+        },
+        "b6": {
+          "type": "pill",
+          "settings": {
+            "label": "Apparel",
+            "link": "/collections/bikes-1"
+          }
+        },
+        "b7": {
+          "type": "pill",
+          "settings": {
+            "label": "Drivetrain & spares",
+            "link": "/collections/mtb-spares"
+          }
+        },
+        "b8": {
+          "type": "pill",
+          "settings": {
+            "label": "Tyres & wheels",
+            "link": "/collections/mtb-spares"
+          }
+        },
+        "b9": {
+          "type": "pill",
+          "settings": {
+            "label": "Indoor training",
+            "link": "/collections/all"
+          }
+        },
+        "b10": {
+          "type": "pill",
+          "settings": {
+            "label": "Accessories",
+            "link": "/collections/accessories"
+          }
+        },
+        "b11": {
+          "type": "pill",
+          "settings": {
+            "label": "Sale",
+            "link": "/collections/all"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10",
+        "b11"
+      ],
+      "settings": {
+        "link": "/collections/bikes"
+      }
     },
-    "service_banner": {
-      "type": "service-banner"
+    "sale": {
+      "type": "sale-rail",
+      "settings": {
+        "collection": "road-bikes"
+      }
     },
-    "promo_split": {
-      "type": "promo-split"
+    "bikes": {
+      "type": "product-grid",
+      "settings": {
+        "collection": "bikes",
+        "card_style": "bike",
+        "limit": 4
+      }
     },
-    "testimonials": {
-      "type": "testimonials"
+    "workshop": {
+      "type": "workshop",
+      "blocks": {
+        "b1": {
+          "type": "step",
+          "settings": {
+            "title": "Order online",
+            "text": "Pay securely, any UPI or card"
+          }
+        },
+        "b2": {
+          "type": "step",
+          "settings": {
+            "title": "We build and tune it",
+            "text": "Assembled in our workshop"
+          }
+        },
+        "b3": {
+          "type": "step",
+          "settings": {
+            "title": "Delivered to you",
+            "text": "Ready to ride, tracked all the way"
+          }
+        },
+        "b4": {
+          "type": "service",
+          "settings": {
+            "name": "Standard delivery",
+            "what": "[3–6] working days, tracked",
+            "price": "₹[PRICE]"
+          }
+        },
+        "b5": {
+          "type": "service",
+          "settings": {
+            "name": "Express delivery",
+            "what": "[1–2] working days, major cities",
+            "price": "₹[PRICE]"
+          }
+        },
+        "b6": {
+          "type": "service",
+          "settings": {
+            "name": "Free delivery",
+            "what": "On orders over ₹[AMOUNT]",
+            "price": "FREE"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6"
+      ],
+      "settings": {
+        "eyebrow": "ONLINE SHOP · SHIPPED ACROSS INDIA",
+        "heading": "Built, tuned, delivered",
+        "text": "Every bike is assembled and checked by our mechanics before it leaves. Order online, ask us anything on WhatsApp, and it arrives ready to ride.",
+        "button_text": "Shop bikes",
+        "button_link": "/collections/bikes",
+        "button2_text": "Delivery details",
+        "button2_link": "/pages/shipping",
+        "image": "shopify://shop_images/photo-1678094583761-acfed21a8ad7.jpg"
+      }
+    },
+    "gear": {
+      "type": "product-grid",
+      "settings": {
+        "heading": "Gear riders are buying",
+        "subheading": "",
+        "collection": "helmets",
+        "card_style": "gear",
+        "limit": 4,
+        "link_text": "Shop all gear"
+      }
+    },
+    "brands": {
+      "type": "brands",
+      "blocks": {
+        "b1": {
+          "type": "brand",
+          "settings": {
+            "name": "Polygon"
+          }
+        },
+        "b2": {
+          "type": "brand",
+          "settings": {
+            "name": "Marin"
+          }
+        },
+        "b3": {
+          "type": "brand",
+          "settings": {
+            "name": "Wahoo"
+          }
+        },
+        "b4": {
+          "type": "brand",
+          "settings": {
+            "name": "Shimano"
+          }
+        },
+        "b5": {
+          "type": "brand",
+          "settings": {
+            "name": "Giro"
+          }
+        },
+        "b6": {
+          "type": "brand",
+          "settings": {
+            "name": "Bell"
+          }
+        },
+        "b7": {
+          "type": "brand",
+          "settings": {
+            "name": "Vittoria"
+          }
+        },
+        "b8": {
+          "type": "brand",
+          "settings": {
+            "name": "Bontrager"
+          }
+        },
+        "b9": {
+          "type": "brand",
+          "settings": {
+            "name": "KMC"
+          }
+        },
+        "b10": {
+          "type": "brand",
+          "settings": {
+            "name": "DMT"
+          }
+        },
+        "b11": {
+          "type": "brand",
+          "settings": {
+            "name": "Bluegrass"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10",
+        "b11"
+      ],
+      "settings": {
+        "note": "Each tile searches the store for that brand."
+      }
+    },
+    "reviews": {
+      "type": "reviews",
+      "blocks": {
+        "b1": {
+          "type": "review",
+          "settings": {
+            "name": "[Reviewer name]",
+            "when": "[2 weeks ago]",
+            "stars": 5,
+            "text": "[Paste a real Google review about the workshop / servicing.]"
+          }
+        },
+        "b2": {
+          "type": "review",
+          "settings": {
+            "name": "[Reviewer name]",
+            "when": "[1 month ago]",
+            "stars": 5,
+            "text": "[Paste a real Google review about buying a bike and the staff's advice.]"
+          }
+        },
+        "b3": {
+          "type": "review",
+          "settings": {
+            "name": "[Reviewer name]",
+            "when": "[3 months ago]",
+            "stars": 5,
+            "text": "[Paste a real Google review about rentals, rides or the community.]"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3"
+      ],
+      "settings": {
+        "google_api_key": "",
+        "place_id": ""
+      }
+    },
+    "store": {
+      "type": "store-visit",
+      "settings": {
+        "button_link": "https://wa.me/919038065012",
+        "button2_link": "mailto:customersupport@spokehub.in",
+        "address": ""
+      }
+    },
+    "help": {
+      "type": "buying-help",
+      "blocks": {
+        "b1": {
+          "type": "card",
+          "settings": {
+            "tag": "SIZE GUIDE",
+            "name": "Find your bike size",
+            "text": "Height and inseam chart for every frame size",
+            "link": "/pages/size-guides"
+          }
+        },
+        "b2": {
+          "type": "card",
+          "settings": {
+            "tag": "BUYING GUIDE",
+            "name": "How to choose a mountain bike",
+            "text": "Hardtail or full-suspension? Wheel size? Budget?",
+            "link": "/pages/buying-guide"
+          }
+        },
+        "b3": {
+          "type": "card",
+          "settings": {
+            "tag": "DELIVERY & RETURNS",
+            "name": "What happens after you order",
+            "text": "Shipping times, tracking and easy returns",
+            "link": "/pages/shipping"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3"
+      ],
+      "settings": {
+        "button_link": "https://wa.me/919038065012",
+        "link": "/pages/buying-guide",
+        "image": "shopify://shop_images/photo-1541625602330-2277a4c46182.jpg"
+      }
     }
   },
-  "order": ["hero", "categories", "main", "service_banner", "promo_split", "testimonials"]
+  "order": [
+    "hero",
+    "trust_row",
+    "rides",
+    "sale",
+    "bikes",
+    "workshop",
+    "gear",
+    "help",
+    "brands",
+    "reviews",
+    "store"
+  ]
 }

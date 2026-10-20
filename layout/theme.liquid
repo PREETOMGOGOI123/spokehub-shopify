@@ -7,17 +7,9 @@
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
 
-    <style>
-      {{ settings.type_body_font | font_face: font_display: 'swap' }}
-      {{ settings.type_header_font | font_face: font_display: 'swap' }}
-    </style>
-
-    <style>
-      :root {
-        --font-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
-        --font-family-heading: {{ settings.type_header_font.family }}, {{ settings.type_header_font.fallback_families }};
-      }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     {{ content_for_header }}
 </head>

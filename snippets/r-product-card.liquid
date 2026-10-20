@@ -1,0 +1,92 @@
+{%- comment -%}
+  Redesign product card. Renders one product from the store's catalogue.
+  Params: product, variant ('sale' | 'bike' | 'gear')
+{%- endcomment -%}
+{%- liquid
+  assign on_sale = false
+  if product.compare_at_price > product.price
+    assign on_sale = true
+    assign pct = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round
+  endif
+
+  assign note = product.metafields.custom.card_note
+  if note == blank
+    for opt in product.options_with_values
+      assign opt_name = opt.name | downcase
+      if opt_name contains 'size' and opt.values.size > 0
+        assign note = opt.values.first | prepend: 'Sizes '
+        if opt.values.size > 1
+          assign note = note | append: ' – ' | append: opt.values.last
+        endif
+        break
+      endif
+    endfor
+  endif
+  if note == blank
+    assign note = product.type
+  endif
+
+  assign spec = product.metafields.custom.spec
+  if spec == blank
+    assign spec = product.type
+  endif
+
+  comment
+    Brand line: the product's vendor — unless that is just the shop name, in which case the
+    first word of the title is used (titles start with the brand, e.g. "GIRO GAUGE BOA").
+  endcomment
+  assign vendor_down = product.vendor | downcase
+  assign shop_down = shop.name | downcase
+  assign brand = product.vendor
+  assign name = product.title
+  if vendor_down == shop_down or vendor_down == blank
+    assign title_words = product.title | split: ' '
+    if title_words.size > 1
+      assign brand = title_words.first
+      assign name = product.title | remove_first: brand | strip
+    else
+      assign brand = ''
+    endif
+  endif
+
+  comment
+    Don't repeat the brand inside the name ("MARIN" / "MARIN SKY TRAIL" -> "SKY TRAIL").
+  endcomment
+  if brand != blank
+    assign name_start = name | slice: 0, brand.size | downcase
+    assign brand_down = brand | downcase
+    if name_start == brand_down and name.size > brand.size
+      assign name = product.title | slice: brand.size, 200 | strip
+    endif
+  endif
+-%}
+<a href="{{ product.url }}" class="r-card r-card--{{ variant }}">
+  <div class="r-card__img">
+    {%- if variant == 'sale' and on_sale -%}
+      <span class="r-card__badge">−{{ pct }}%</span>
+    {%- endif -%}
+    {%- if product.featured_image -%}
+      {{ product.featured_image | image_url: width: 700 | image_tag: loading: 'lazy', alt: product.title, sizes: '(min-width: 1280px) 300px, (min-width: 750px) 25vw, 50vw', widths: '300, 450, 600, 700' }}
+    {%- else -%}
+      <span class="r-card__caption">{% if variant == 'bike' %}Side-on bike photo, white bg{% else %}Product photo, white bg{% endif %}</span>
+    {%- endif -%}
+  </div>
+  <div class="r-card__body">
+    {%- if brand != blank -%}
+      <div class="r-card__brand">{{ brand | upcase }}</div>
+    {%- endif -%}
+    <div class="r-card__name">{{ name }}</div>
+    {%- if variant == 'bike' and spec != blank -%}
+      <div class="r-card__spec">{{ spec }}</div>
+    {%- endif -%}
+    <div class="r-card__prices">
+      <span class="r-card__price">₹{{ product.price | money_without_currency | remove: '.00' }}</span>
+      {%- if variant == 'sale' and on_sale -%}
+        <s class="r-card__was">₹{{ product.compare_at_price | money_without_currency | remove: '.00' }}</s>
+      {%- endif -%}
+    </div>
+    {%- if variant != 'bike' and note != blank -%}
+      <div class="r-card__note">{{ note }}</div>
+    {%- endif -%}
+  </div>
+</a>

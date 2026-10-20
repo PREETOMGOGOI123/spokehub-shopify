@@ -1,722 +1,209 @@
-{%- liquid
-  assign slide_count = section.blocks.size
-  if slide_count == 0
-    assign slide_count = 1
-  endif
--%}
-<section id="hero-{{ section.id }}" class="hero hero--text-{{ section.settings.text_color }}{% if section.settings.show_panel %} hero--panel{% endif %}{% if section.settings.image_fit == 'contain' %} hero--contain{% endif %}" data-autoplay="{{ section.settings.autoplay }}" data-speed="{{ section.settings.speed | times: 1000 }}" style="--hero-bg: {{ section.settings.image_bg }};">
-  <div class="hero__slides">
-    {%- for i in (1..slide_count) -%}
-      {%- liquid
-        if section.blocks.size > 0
-          assign slide = section.blocks[forloop.index0].settings
-          assign slide_attrs = section.blocks[forloop.index0].shopify_attributes
-        else
-          assign slide = section.settings
-          assign slide_attrs = ''
-        endif
-        if forloop.first
-          assign img_loading = 'eager'
-          assign img_priority = 'high'
-        else
-          assign img_loading = 'lazy'
-          assign img_priority = 'auto'
-        endif
-      -%}
-      <div class="hero__slide{% if forloop.first %} is-active{% endif %}" {{ slide_attrs }}>
-        {%- if slide.image != blank -%}
-          {%- capture hero_bg_style -%}--hero-focal: {{ slide.image.presentation.focal_point }};{%- endcapture -%}
-          {{ slide.image | image_url: width: 2400 | image_tag:
-            class: 'hero__bg',
-            style: hero_bg_style,
-            alt: '',
-            loading: img_loading,
-            fetchpriority: img_priority,
-            sizes: '100vw',
-            widths: '800, 1200, 1600, 2000, 2400'
-          }}
-        {%- else -%}
-          {{ 'hero-apparel-1' | placeholder_svg_tag: 'hero__bg hero__bg--placeholder' }}
-        {%- endif -%}
-      </div>
-    {%- endfor -%}
-  </div>
+<section class="hero">
+  <div class="hero__copy">
+    {%- if section.settings.eyebrow != blank -%}
+      <div class="hero__eyebrow">{{ section.settings.eyebrow }}</div>
+    {%- endif -%}
 
-  <div class="hero__content">
-    <div class="hero__inner">
-      {%- comment -%} one title per slide, stacked in the same spot; a slide with no title uses the section title {%- endcomment -%}
-      <div class="hero__titles hero__fade-in" style="animation-delay: 0.1s;" aria-live="polite">
-        {%- for i in (1..slide_count) -%}
-          {%- liquid
-            assign t1 = section.settings.title_part1
-            assign t2 = section.settings.title_part2
-            if section.blocks.size > 0
-              assign b = section.blocks[forloop.index0].settings
-              if b.title_line1 != blank
-                assign t1 = b.title_line1
-                assign t2 = b.title_line2
-              endif
-            endif
-            if forloop.first
-              assign title_tag = 'h1'
-            else
-              assign title_tag = 'p'
-            endif
-          -%}
-          <{{ title_tag }} class="hero__title{% if forloop.first %} is-active{% endif %}">
-            <span class="hero__title-line">{{ t1 }}</span>
-            {%- if t2 != blank -%}
-              <span class="hero__title-line">{{ t2 }}</span>
-            {%- endif -%}
-          </{{ title_tag }}>
-        {%- endfor -%}
-      </div>
-      <span class="hero__accent hero__fade-in" style="animation-delay: 0.25s;" aria-hidden="true"></span>
+    <h1 class="hero__title">{{ section.settings.heading }}</h1>
 
-      {%- comment -%} one subtitle per slide, stacked in the same spot; the active one fades in {%- endcomment -%}
-      <div class="hero__subtitles hero__fade-in" style="animation-delay: 0.35s;" aria-live="polite">
-        {%- for i in (1..slide_count) -%}
-          {%- liquid
-            if section.blocks.size > 0
-              assign sub_text = section.blocks[forloop.index0].settings.subtitle
-            else
-              assign sub_text = section.settings.subtitle
-            endif
-          -%}
-          <p class="hero__subtitle{% if sub_text.size <= 50 %} hero__subtitle--tag{% endif %}{% if forloop.first %} is-active{% endif %}">{{ sub_text }}</p>
-        {%- endfor -%}
-      </div>
+    {%- if section.settings.text != blank -%}
+      <p class="hero__text">{{ section.settings.text }}</p>
+    {%- endif -%}
 
-      <div class="hero__buttons hero__fade-in" style="animation-delay: 0.45s;">
-        <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="hero__btn">
-          <span class="hero__btn-text">
-            {{ section.settings.button_text }}
-            <svg class="hero__btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M5 12h14"/>
-              <path d="m13 6 6 6-6 6"/>
-            </svg>
-          </span>
-        </a>
-        {%- if section.settings.button2_text != blank -%}
-          <a href="{{ section.settings.button2_link | default: '/pages/service' }}" class="hero__btn hero__btn--outline">
-            <span class="hero__btn-text">{{ section.settings.button2_text }}</span>
-          </a>
-        {%- endif -%}
-      </div>
+    <div class="hero__buttons">
+      {%- if section.settings.button_text != blank -%}
+        <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="hero__btn hero__btn--primary">{{ section.settings.button_text }}</a>
+      {%- endif -%}
+      {%- if section.settings.button2_text != blank -%}
+        <a href="{{ section.settings.button2_link | default: routes.root_url }}" class="hero__btn hero__btn--secondary">{{ section.settings.button2_text }}</a>
+      {%- endif -%}
+    </div>
+
+    <div class="hero__checks">
+      {%- if section.settings.check_1 != blank -%}
+        <span class="hero__check">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+          {{ section.settings.check_1 }}
+        </span>
+      {%- endif -%}
+      {%- if section.settings.check_2 != blank -%}
+        <span class="hero__check">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+          {{ section.settings.check_2 }}
+        </span>
+      {%- endif -%}
     </div>
   </div>
 
-  {%- if slide_count > 1 -%}
-    <div class="hero__controls">
-      <button type="button" class="hero__arrow hero__arrow--prev" aria-label="Previous slide">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>
-      </button>
-      <div class="hero__dots">
-        {%- for i in (1..slide_count) -%}
-          <button type="button" class="hero__dot{% if forloop.first %} is-active{% endif %}" aria-label="Go to slide {{ i }}"></button>
-        {%- endfor -%}
-      </div>
-      <button type="button" class="hero__arrow hero__arrow--next" aria-label="Next slide">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
-      </button>
-    </div>
-  {%- endif -%}
+  <div class="hero__media{% if section.settings.image != blank %} hero__media--image{% endif %}">
+    {%- if section.settings.image != blank -%}
+      {{ section.settings.image | image_url: width: 1600 | image_tag:
+        class: 'hero__img',
+        alt: section.settings.image.alt,
+        loading: 'eager',
+        fetchpriority: 'high',
+        sizes: '(min-width: 1280px) 620px, 100vw',
+        widths: '600, 900, 1200, 1600'
+      }}
+    {%- else -%}
+      <div class="hero__placeholder-label">HERO PHOTO</div>
+      <div class="hero__placeholder-text">Real rider on a local trail or ghat road — one strong image, no carousel</div>
+    {%- endif -%}
+  </div>
 </section>
 
-<script>
-  (function () {
-    var root = document.getElementById('hero-{{ section.id }}');
-    if (!root) return;
-
-    var slides = root.querySelectorAll('.hero__slide');
-    var subs = root.querySelectorAll('.hero__subtitle');
-    var titles = root.querySelectorAll('.hero__title');
-    var dots = root.querySelectorAll('.hero__dot');
-    var n = slides.length;
-    if (n < 2) return;
-
-    var index = 0;
-    var timer = null;
-    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var autoplay = root.getAttribute('data-autoplay') === 'true' && !reduceMotion;
-    var speed = parseInt(root.getAttribute('data-speed'), 10) || 5000;
-
-    var leaveTimer = null;
-
-    function show(i) {
-      var next = (i + n) % n;
-      if (next === index) return;
-
-      // keep the outgoing slide fully visible underneath while the new one fades in
-      var leaving = slides[index];
-      for (var j = 0; j < n; j++) { slides[j].classList.remove('is-leaving'); }
-      leaving.classList.add('is-leaving');
-      clearTimeout(leaveTimer);
-      leaveTimer = setTimeout(function () { leaving.classList.remove('is-leaving'); }, 1000);
-
-      index = next;
-      for (var k = 0; k < n; k++) {
-        var on = k === index;
-        slides[k].classList.toggle('is-active', on);
-        subs[k].classList.toggle('is-active', on);
-        titles[k].classList.toggle('is-active', on);
-        dots[k].classList.toggle('is-active', on);
-      }
-    }
-
-    function stop() {
-      if (timer) { clearInterval(timer); timer = null; }
-    }
-
-    function start() {
-      if (!autoplay) return;
-      stop();
-      timer = setInterval(function () { show(index + 1); }, speed);
-    }
-
-    root.querySelector('.hero__arrow--prev').addEventListener('click', function () { show(index - 1); start(); });
-    root.querySelector('.hero__arrow--next').addEventListener('click', function () { show(index + 1); start(); });
-    dots.forEach(function (dot, k) {
-      dot.addEventListener('click', function () { show(k); start(); });
-    });
-
-    // pause only while the visitor is using the arrows / dots (the hero fills the screen,
-    // so pausing on any mouse movement over it would stop the slides almost every time)
-    var controls = root.querySelector('.hero__controls');
-    controls.addEventListener('mouseenter', stop);
-    controls.addEventListener('mouseleave', start);
-    controls.addEventListener('focusin', stop);
-    controls.addEventListener('focusout', start);
-
-    // swipe on touch screens
-    var startX = null;
-    root.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
-    root.addEventListener('touchend', function (e) {
-      if (startX === null) return;
-      var dx = e.changedTouches[0].clientX - startX;
-      startX = null;
-      if (Math.abs(dx) < 50) return;
-      show(dx < 0 ? index + 1 : index - 1);
-      start();
-    });
-
-    // theme editor: jump to a slide when its block is selected
-    document.addEventListener('shopify:block:select', function (e) {
-      if (!root.contains(e.target)) return;
-      var k = Array.prototype.indexOf.call(slides, e.target);
-      if (k > -1) { show(k); stop(); }
-    });
-    document.addEventListener('shopify:block:deselect', function (e) {
-      if (root.contains(e.target)) start();
-    });
-
-    start();
-  })();
-</script>
-
 {% stylesheet %}
-  /* text colors — light text for dark photos, dark text for light photos */
   .hero {
-    --hero-text: #fff;
-    --hero-text-muted: rgba(255, 255, 255, 0.85);
-    --hero-text-inverse: #111111;
-    --hero-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
-    --hero-panel: rgba(0, 0, 0, 0.45);
-  }
-
-  .hero--text-dark {
-    --hero-text: var(--gray-12);
-    --hero-text-muted: var(--gray-12);
-    --hero-text-inverse: #fff;
-    --hero-shadow: none;
-    --hero-panel: rgba(255, 255, 255, 0.75);
-  }
-
-  .hero {
-    position: relative;
-    min-height: 84vh;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    background: var(--hero-bg, var(--gray-5));
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 4rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: clamp(3.2rem, 6vw, 7.2rem) clamp(1.6rem, 4vw, 4rem);
   }
 
-  /* slides: stacked images that cross-fade */
-  /* z-index here makes the slides their own stacking layer, so their inner z-indexes can never rise above the text */
-  .hero__slides {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-  }
-
-  /*
-   * The new slide fades in ON TOP of the old one, which stays fully opaque
-   * underneath until it is covered. (Fading both at once lets the grey
-   * background show through in the middle of the change — the "flash".)
-   */
-  .hero__slide {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.9s ease, visibility 0s linear 0.9s;
-  }
-
-  .hero__slide.is-leaving {
-    z-index: 1;
-    opacity: 1;
-    visibility: visible;
-    transition: none;
-  }
-
-  .hero__slide.is-active {
-    z-index: 2;
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.9s ease, visibility 0s;
-  }
-
-  .hero__bg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    /* focal point set on the image in the admin; centre if none */
-    object-position: var(--hero-focal, center);
-  }
-
-  .hero--contain .hero__bg {
-    object-fit: contain;
-    object-position: center;
-  }
-
-  /* shown only until an image is picked in the theme editor */
-  .hero__bg--placeholder {
-    background: var(--gray-5);
-    fill: var(--gray-8);
-  }
-
-  .hero__content {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    z-index: 1;
-    transform: translateY(-50%);
-    color: var(--hero-text);
-    width: 100%;
-    box-sizing: border-box;
-    margin: 0;
-    /* same left boundary as the product rows and category cards: the page-width column */
-    padding: 0 var(--page-padding) 0 max(var(--page-padding), calc((100vw - var(--page-max)) / 2));
-    display: flex;
-    justify-content: flex-start;
-  }
-
-  /* narrow text column so it never reaches the subject */
-  .hero__inner {
+  .hero__copy {
+    flex: 1 1 420px;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    max-width: 50rem;
-    text-align: left;
+    justify-content: center;
+    gap: 2.4rem;
   }
 
-  /* optional panel behind the text (theme setting) */
-  .hero--panel .hero__inner {
-    padding: var(--space-7) var(--space-8);
-    background: var(--hero-panel);
-  }
-
-  /* all titles share one grid cell, so the block never changes height */
-  .hero__titles {
-    display: grid;
+  .hero__eyebrow {
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--color-accent);
   }
 
   .hero__title {
-    grid-area: 1 / 1;
-    font-size: clamp(3.2rem, 4.8vw, 5.6rem);
-    line-height: 1.05;
-    font-weight: var(--font-weight-bold);
-    letter-spacing: -0.015em;
-    text-transform: uppercase;
     margin: 0;
-    text-shadow: var(--hero-shadow);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(8px);
-    /* old text fades out first, then the new text fades in — no overlapping words */
-    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
-  }
-
-  .hero__title.is-active {
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    transition: opacity 0.5s ease 0.25s, transform 0.5s ease 0.25s, visibility 0s;
-  }
-
-  .hero__title-line {
-    display: block;
-  }
-
-  .hero__accent {
-    display: block;
-    width: 6rem;
-    height: 3px;
-    margin: var(--space-5) 0;
-    background: var(--color-accent);
-  }
-
-  .hero__fade-in {
-    opacity: 0;
-    transform: translateY(24px);
-    animation: hero-fade-in 0.7s ease forwards;
-  }
-
-  @keyframes hero-fade-in {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* all subtitles share one grid cell, so the block never changes height */
-  .hero__subtitles {
-    display: grid;
-    max-width: 44rem;
-    margin: 0 0 var(--space-6);
-  }
-
-  /* long text: normal sentence case, easy to read */
-  .hero__subtitle {
-    grid-area: 1 / 1;
-    font-size: clamp(1.8rem, 2.5vw, 2rem);
-    font-weight: 600;
-    color: var(--hero-text-muted);
-    line-height: 1.6;
-    letter-spacing: 0.01em;
-    margin: 0;
-    text-shadow: var(--hero-shadow);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(8px);
-    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
-  }
-
-  .hero__subtitle.is-active {
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    transition: opacity 0.5s ease 0.25s, transform 0.5s ease 0.25s, visibility 0s;
-  }
-
-  /* dark text on a light, patterned photo: a soft white halo keeps thin lines from cutting through the letters */
-  @media (min-width: 901px) {
-    .hero--text-dark .hero__subtitle {
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.95), 0 0 4px rgba(255, 255, 255, 0.95);
-    }
-  }
-
-  /* short taglines (50 characters or fewer): uppercase with wide spacing */
-  .hero__subtitle--tag {
-    line-height: 1.5;
-    letter-spacing: 0.08em;
+    font-family: var(--font-family-heading);
+    font-weight: 800;
+    font-size: clamp(4.8rem, 7vw, 9.2rem);
+    line-height: 0.92;
+    letter-spacing: -0.01em;
     text-transform: uppercase;
+  }
+
+  .hero__text {
+    margin: 0;
+    max-width: 52rem;
+    font-size: 1.8rem;
+    color: #3d3d3d;
   }
 
   .hero__buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-3);
+    gap: 1.2rem;
   }
 
   .hero__btn {
-    position: relative;
-    display: block;
-    width: fit-content;
-    margin: 0;
-    overflow: hidden;
-    background: var(--color-accent);
-    color: #fff;
-    text-decoration: none;
-    padding: var(--space-3) var(--space-7);
-    border-radius: var(--radius-full);
-    border-bottom: 3px solid #111111;
-    font-weight: var(--font-weight-bold);
-    font-size: var(--font-size-3);
-  }
-
-  /* hover swipe fills with the text color, so it shows on dark and light photos */
-  .hero__btn::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: var(--hero-text);
-    clip-path: polygon(0% 100%, 0% 100%, 0% 100%, 0% 100%);
-    transition: clip-path 0.3s ease;
-  }
-
-  .hero__btn:hover::before {
-    clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%);
-  }
-
-  .hero__btn-text {
-    position: relative;
-    z-index: 1;
     display: inline-flex;
     align-items: center;
-    gap: var(--space-2);
+    height: 5.2rem;
+    box-sizing: border-box;
+    border-radius: 6px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .hero__btn--primary {
+    padding: 0 2.8rem;
+    background: var(--color-accent);
     color: #fff;
-    transition: color 0.3s ease;
   }
 
-  .hero__btn:hover .hero__btn-text {
-    color: var(--hero-text-inverse);
+  .hero__btn--primary:hover {
+    background: var(--color-accent-hover);
+    color: #fff;
   }
 
-  .hero__btn--outline {
-    background: transparent;
-    border: 2px solid var(--hero-text);
+  .hero__btn--secondary {
+    padding: 0 2.6rem;
+    border: 2px solid var(--color-ink);
+    color: var(--color-ink);
   }
 
-  .hero__btn--outline .hero__btn-text {
-    color: var(--hero-text);
+  .hero__btn--secondary:hover {
+    background: var(--color-ink);
+    color: #fff;
   }
 
-  /* slider controls: arrows + dots, bottom right */
-  .hero__controls {
+  .hero__checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem 2rem;
+    font-size: 1.4rem;
+    color: #3d3d3d;
+  }
+
+  .hero__check {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .hero__media {
+    position: relative;
+    flex: 1 1 460px;
+    min-width: 0;
+    min-height: 440px;
+    box-sizing: border-box;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    background: #e6e6e6;
+    border-radius: 10px;
+    color: #4d4d4d;
+  }
+
+  .hero__media--image {
+    padding: 0;
+  }
+
+  .hero__img {
     position: absolute;
-    right: var(--page-padding);
-    top: var(--space-6);
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
-  .hero__arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 4rem;
-    height: 4rem;
-    padding: 0;
-    border: 0;
-    border-radius: 50%;
-    background: #fff;
-    color: var(--gray-12);
-    box-shadow: var(--shadow-3);
-    cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease;
+  .hero__placeholder-label {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
   }
 
-  .hero__arrow:hover {
-    background: var(--color-accent);
-    color: #fff;
-  }
-
-  .hero__dots {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-  }
-
-  .hero__dot {
-    width: 1rem;
-    height: 1rem;
-    padding: 0;
-    border: 0;
-    border-radius: 999px;
-    background: var(--hero-text);
-    opacity: 0.35;
-    cursor: pointer;
-    transition: width 0.25s ease, opacity 0.25s ease;
-  }
-
-  .hero__dot.is-active {
-    width: 2.8rem;
-    background: var(--color-accent);
-    opacity: 1;
-  }
-
-  /*
-   * tablet + mobile: full-screen image with the text anchored to the bottom
-   * over a dark gradient — the subject sits in the clear top part
-   */
-  @media (max-width: 900px) {
-    .hero {
-      --hero-text: #fff;
-      --hero-text-muted: rgba(255, 255, 255, 0.85);
-      --hero-text-inverse: #111111;
-      --hero-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
-      flex-direction: column;
-      justify-content: flex-end;
-      min-height: 60svh;
-    }
-
-    /*
-     * image covers the top 75% of the hero, anchored right (where the bike is);
-     * a shorter box means a smaller crop, so more of the photo fits
-     */
-    .hero__bg {
-      height: 75%;
-      object-fit: cover;
-      object-position: right center;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.5) 45%, rgba(0, 0, 0, 0.85) 100%);
-      pointer-events: none;
-    }
-
-    .hero__content {
-      position: relative;
-      z-index: 1;
-      top: auto;
-      transform: none;
-      justify-content: center;
-      padding: 0 var(--space-5) var(--space-9);
-    }
-
-    .hero__inner {
-      align-items: center;
-      max-width: none;
-      text-align: center;
-    }
-
-    .hero__subtitles {
-      margin-inline: auto;
-    }
-
-    .hero--panel .hero__inner {
-      padding: 0;
-      background: none;
-    }
-
-    .hero__buttons {
-      justify-content: center;
-    }
-
-    .hero__btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 18rem;
-      min-height: 4.8rem;
-      padding: 1.4rem 2.4rem;
-      font-size: 1.6rem;
-      font-weight: 600;
-      text-align: center;
-      box-sizing: border-box;
-      border-radius: 0.4rem;
-    }
-
-    /* controls move to the bottom centre, under the buttons */
-    .hero__controls {
-      right: auto;
-      left: 50%;
-      top: auto;
-      bottom: var(--space-3);
-      transform: translateX(-50%);
-    }
-  }
-
-  @media (max-width: 640px) {
-    .hero__accent {
-      margin: var(--space-4) 0;
-    }
-
-    /* full-width stacked buttons — easy to tap */
-    .hero__buttons {
-      flex-direction: column;
-      align-self: stretch;
-    }
-
-    .hero__btn {
-      width: 100%;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .hero__slide,
-    .hero__title,
-    .hero__subtitle,
-    .hero__dot {
-      transition: none;
-    }
+  .hero__placeholder-text {
+    font-size: 1.4rem;
   }
 {% endstylesheet %}
 
 {% schema %}
 {
   "name": "Hero",
-  "max_blocks": 6,
   "settings": [
-    { "type": "header", "content": "Slider" },
-    { "type": "checkbox", "id": "autoplay", "label": "Change slides automatically", "default": true },
-    { "type": "range", "id": "speed", "label": "Seconds per slide", "min": 3, "max": 10, "step": 1, "unit": "s", "default": 3 },
-    { "type": "header", "content": "Image" },
-    { "type": "image_picker", "id": "image", "label": "Image (used only when there are no slides)" },
-    {
-      "type": "select",
-      "id": "image_fit",
-      "label": "Image fit",
-      "options": [
-        { "value": "cover", "label": "Fill the frame (may crop edges)" },
-        { "value": "contain", "label": "Show the whole image" }
-      ],
-      "default": "cover"
-    },
-    { "type": "color", "id": "image_bg", "label": "Background color", "info": "Shows around the image when 'Show the whole image' is selected. Match it to the photo's background.", "default": "#808080" },
-    { "type": "header", "content": "Text" },
-    {
-      "type": "select",
-      "id": "text_color",
-      "label": "Text color",
-      "info": "Use dark text on light photos and light text on dark photos.",
-      "options": [
-        { "value": "dark", "label": "Dark" },
-        { "value": "light", "label": "Light" }
-      ],
-      "default": "dark"
-    },
-    { "type": "checkbox", "id": "show_panel", "label": "Show panel behind text", "info": "Adds a translucent box behind the text for busy photos.", "default": false },
-    { "type": "text", "id": "title_part1", "label": "Title — line 1 (default for slides without a title)", "default": "PREMIUM GEAR" },
-    { "type": "text", "id": "title_part2", "label": "Title — line 2 (default for slides without a title)", "default": "EXPERT SERVICE" },
-    { "type": "text", "id": "subtitle", "label": "Subtitle (used only when there are no slides)", "default": "Your trusted cycling hub since 2017" },
-    { "type": "header", "content": "Buttons" },
-    { "type": "text", "id": "button_text", "label": "Button text", "default": "Shop Now" },
-    { "type": "url", "id": "button_link", "label": "Button link", "default": "/collections/all" },
-    { "type": "text", "id": "button2_text", "label": "Second button text", "info": "Leave empty to hide the second button.", "default": "Book a Service" },
-    { "type": "url", "id": "button2_link", "label": "Second button link", "info": "Defaults to the Service page." }
-  ],
-  "blocks": [
-    {
-      "type": "slide",
-      "name": "Slide",
-      "settings": [
-        { "type": "image_picker", "id": "image", "label": "Image" },
-        { "type": "text", "id": "title_line1", "label": "Title — line 1", "info": "Leave empty to use the section's title." },
-        { "type": "text", "id": "title_line2", "label": "Title — line 2" },
-        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Your trusted cycling hub since 2017" }
-      ]
-    }
+    { "type": "image_picker", "id": "image", "label": "Photo", "info": "One strong image — a real rider on a local trail or ghat road. Around 1600 × 1200 px." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "GUWAHATI · SINCE 2017" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Your next bike, delivered ready to ride" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Bikes, parts and a proper workshop under one roof. Shop online, book a service, or join the next group ride." },
+    { "type": "text", "id": "button_text", "label": "Primary button text", "default": "Shop bikes" },
+    { "type": "url", "id": "button_link", "label": "Primary button link" },
+    { "type": "text", "id": "button2_text", "label": "Secondary button text", "default": "Book a service" },
+    { "type": "url", "id": "button2_link", "label": "Secondary button link" },
+    { "type": "text", "id": "check_1", "label": "Tick line 1", "default": "Authorised Shimano dealer" },
+    { "type": "text", "id": "check_2", "label": "Tick line 2", "default": "Polygon · Marin · Wahoo" }
   ],
   "presets": [
-    {
-      "name": "Hero",
-      "blocks": [
-        { "type": "slide", "settings": { "subtitle": "Your trusted cycling hub since 2017" } },
-        { "type": "slide", "settings": { "title_line1": "RIDE BEYOND", "title_line2": "LIMITS", "subtitle": "Race-ready bikes, expert hands" } }
-      ]
-    }
+    { "name": "Hero" }
   ]
 }
 {% endschema %}

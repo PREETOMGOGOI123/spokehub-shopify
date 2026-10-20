@@ -1,0 +1,98 @@
+<section class="trust">
+  <div class="trust__inner">
+    {%- for block in section.blocks -%}
+      <div class="trust__item" {{ block.shopify_attributes }}>
+        {%- case block.settings.icon -%}
+          {%- when 'shield' -%}
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+          {%- when 'price' -%}
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h7"/><path d="M17 15l2 2 3-4"/></svg>
+          {%- when 'returns' -%}
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4h4"/></svg>
+          {%- when 'wrench' -%}
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/></svg>
+        {%- endcase -%}
+        <div>
+          <div class="trust__title">{{ block.settings.title }}</div>
+          <div class="trust__text">{{ block.settings.text }}</div>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .trust {
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+
+  .trust__inner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2.4rem clamp(1.6rem, 4vw, 4rem);
+  }
+
+  .trust__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.4rem;
+  }
+
+  .trust__item svg {
+    flex-shrink: 0;
+  }
+
+  .trust__title {
+    font-weight: 700;
+  }
+
+  .trust__text {
+    font-size: 1.4rem;
+    color: var(--color-muted);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Trust row",
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "shield", "label": "Shield" },
+            { "value": "price", "label": "Price list" },
+            { "value": "returns", "label": "Returns" },
+            { "value": "wrench", "label": "Wrench" }
+          ],
+          "default": "shield"
+        },
+        { "type": "text", "id": "title", "label": "Title", "default": "Authorised Shimano dealer" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Genuine parts, proper warranty" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust row",
+      "blocks": [
+        { "type": "item", "settings": { "icon": "shield", "title": "Authorised Shimano dealer", "text": "Genuine parts, proper warranty" } },
+        { "type": "item", "settings": { "icon": "price", "title": "Best price promise", "text": "Found it cheaper? We'll match it" } },
+        { "type": "item", "settings": { "icon": "returns", "title": "Easy returns", "text": "[RETURN WINDOW] days, no fuss" } },
+        { "type": "item", "settings": { "icon": "wrench", "title": "Workshop-assembled", "text": "Every bike built and tuned in-house" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

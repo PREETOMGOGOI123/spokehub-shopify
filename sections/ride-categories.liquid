@@ -1,0 +1,190 @@
+<section id="categories" class="r-section">
+  <div class="r-head">
+    <h2 class="r-title">{{ section.settings.heading }}</h2>
+    {%- if section.settings.link_text != blank -%}
+      {%- if section.settings.link != blank -%}
+        {%- assign all_url = section.settings.link -%}
+      {%- else -%}
+        {%- assign all_url = routes.collections_url | append: '/bikes' -%}
+      {%- endif -%}
+      <a href="{{ all_url }}" class="r-link">{{ section.settings.link_text }}</a>
+    {%- endif -%}
+  </div>
+
+  <div class="rides">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'ride' -%}
+        <a href="{{ block.settings.link | default: routes.all_products_collection_url }}" class="ride{% if block.settings.image != blank %} ride--image{% endif %}" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            {{ block.settings.image | image_url: width: 900 | image_tag: class: 'ride__img', alt: '', loading: 'lazy', sizes: '(min-width: 1280px) 400px, 100vw', widths: '400, 600, 900' }}
+          {%- else -%}
+            <div class="ride__photo-label">PHOTO · {{ block.settings.photo_label }}</div>
+          {%- endif -%}
+          <div class="ride__body">
+            <div class="ride__name">{{ block.settings.name }}</div>
+            <div class="ride__blurb">{{ block.settings.blurb }}</div>
+            <div class="ride__cta">
+              Shop {{ block.settings.name }}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </div>
+          </div>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  <div class="pills">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'pill' -%}
+        <a href="{{ block.settings.link | default: routes.all_products_collection_url }}" class="pill" {{ block.shopify_attributes }}>{{ block.settings.label }}</a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .rides {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.6rem;
+  }
+
+  .ride {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 340px;
+    box-sizing: border-box;
+    padding: 2.4rem;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #e6e6e6;
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+
+  .ride__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .ride:hover .ride__img {
+    transform: scale(1.04);
+  }
+
+  .ride--image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 35%, rgba(0, 0, 0, 0.7));
+  }
+
+  .ride--image {
+    color: #fff;
+  }
+
+  .ride__photo-label {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #4d4d4d;
+  }
+
+  .ride__body {
+    position: relative;
+    z-index: 1;
+    margin-top: auto;
+  }
+
+  .ride__name {
+    font-family: var(--font-family-heading);
+    font-weight: 800;
+    font-size: 4.4rem;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .ride__blurb {
+    margin-top: 0.6rem;
+    font-size: 1.5rem;
+    color: #3d3d3d;
+  }
+
+  .ride--image .ride__blurb {
+    color: #eee;
+  }
+
+  .ride__cta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1.4rem;
+    font-weight: 700;
+  }
+
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    height: 4.4rem;
+    padding: 0 1.8rem;
+    border: 1px solid #c4c4c4;
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-size: 1.5rem;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .pill:hover {
+    border-color: var(--color-ink);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Shop by ride",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop by ride" },
+    { "type": "text", "id": "link_text", "label": "Link text", "default": "All bikes" },
+    { "type": "url", "id": "link", "label": "Link" }
+  ],
+  "blocks": [
+    {
+      "type": "ride",
+      "name": "Ride card",
+      "limit": 4,
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "MTB" },
+        { "type": "text", "id": "blurb", "label": "Description", "default": "Hardtails and trail bikes for climbs, roots and rough descents." },
+        { "type": "url", "id": "link", "label": "Link" },
+        { "type": "image_picker", "id": "image", "label": "Photo" },
+        { "type": "text", "id": "photo_label", "label": "Placeholder label (shown until a photo is set)", "default": "TRAIL / HARDTAIL" }
+      ]
+    },
+    {
+      "type": "pill",
+      "name": "Category pill",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Helmets" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Shop by ride" }
+  ]
+}
+{% endschema %}

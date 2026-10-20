@@ -1,0 +1,93 @@
+<section id="sale" class="r-section">
+  <div class="r-head">
+    <div>
+      {%- if section.settings.badge != blank -%}
+        <div class="r-badge">{{ section.settings.badge }}</div>
+      {%- endif -%}
+      <h2 class="r-title">{{ section.settings.heading }}</h2>
+    </div>
+    {%- if section.settings.link_text != blank -%}
+      <a href="{{ section.settings.collection.url | default: section.settings.link | default: routes.all_products_collection_url }}" class="r-link">{{ section.settings.link_text }}</a>
+    {%- endif -%}
+  </div>
+
+  <div class="r-grid sale-grid">
+    {%- assign shown = 0 -%}
+    {%- for product in section.settings.collection.products -%}
+      {%- if section.settings.photos_only and product.featured_image == blank -%}{%- continue -%}{%- endif -%}
+      {% render 'r-product-card', product: product, variant: 'sale' %}
+      {%- assign shown = shown | plus: 1 -%}
+      {%- if shown >= section.settings.limit -%}{%- break -%}{%- endif -%}
+    {%- else -%}
+      <div class="sale-empty">Choose a collection in the theme editor to show products here.</div>
+    {%- endfor -%}
+
+    {%- if section.settings.card_title != blank -%}
+      <a href="{{ section.settings.collection.url | default: section.settings.link | default: routes.all_products_collection_url }}" class="sale-all">
+        <div class="sale-all__title">{{ section.settings.card_title }}</div>
+        <div class="sale-all__text">{{ section.settings.card_text }}</div>
+      </a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .sale-grid {
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  }
+
+  .sale-empty {
+    grid-column: 1 / -1;
+    padding: 2.4rem;
+    border-radius: 10px;
+    background: var(--color-surface);
+    color: var(--color-muted);
+  }
+
+  .sale-all {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.8rem;
+    min-height: 260px;
+    box-sizing: border-box;
+    padding: 2.4rem;
+    border-radius: 10px;
+    background: var(--color-ink);
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .sale-all__title {
+    font-family: var(--font-family-heading);
+    font-weight: 800;
+    font-size: 3.2rem;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .sale-all__text {
+    font-size: 1.5rem;
+    color: #ccc;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Sale rail",
+  "settings": [
+    { "type": "text", "id": "badge", "label": "Badge", "default": "ENDS [DATE]" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "20% off cycling shoes" },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Products with a compare-at price show the discount badge and the struck-through price." },
+    { "type": "checkbox", "id": "photos_only", "label": "Only show products that have a photo", "default": true },
+    { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 6, "step": 1, "default": 3 },
+    { "type": "text", "id": "link_text", "label": "Link text", "default": "All shoes on sale" },
+    { "type": "url", "id": "link", "label": "Link (if no collection is chosen)" },
+    { "type": "text", "id": "card_title", "label": "Black card title", "default": "See every shoe on sale" },
+    { "type": "text", "id": "card_text", "label": "Black card text", "default": "MTB, road and flat-pedal shoes" }
+  ],
+  "presets": [
+    { "name": "Sale rail" }
+  ]
+}
+{% endschema %}
