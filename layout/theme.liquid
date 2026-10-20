@@ -7,13 +7,27 @@
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
 
+    <style>
+      {{ settings.type_body_font | font_face: font_display: 'swap' }}
+      {{ settings.type_header_font | font_face: font_display: 'swap' }}
+    </style>
+
+    <style>
+      :root {
+        --font-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+        --font-family-heading: {{ settings.type_header_font.family }}, {{ settings.type_header_font.fallback_families }};
+      }
+    </style>
+
     {{ content_for_header }}
 </head>
 <body>
     {% render 'maintenance-notice' %}
     <div class="scroll-progress"><div class="scroll-progress__bar"></div></div>
     {% section 'header' %}
-    {{ content_for_layout }}
+    <main class="page{% if template.name == 'index' %} home-page{% endif %}">
+      {{ content_for_layout }}
+    </main>
     {% section 'footer' %}
 
     <script>

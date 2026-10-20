@@ -1,0 +1,221 @@
+<section class="category-cards reveal">
+  <div class="category-cards__head">
+    <h2 class="category-cards__title">Shop by Category</h2>
+    <p class="category-cards__subtitle">Find the right gear for every ride.</p>
+  </div>
+
+  <div class="category-cards__slider">
+    <div class="category-cards__track" id="category-cards-track">
+      <a href="{{ routes.collections_url }}/bikes" class="category-card">
+        <div class="category-card__media"><img class="category-card__img" src="{{ 'cat-bikes.jpg' | asset_url }}" alt="" width="300" height="300" loading="lazy"></div>
+        <span class="category-card__label">Bikes</span>
+      </a>
+      <a href="{{ routes.collections_url }}/apparels" class="category-card">
+        <div class="category-card__media"><img class="category-card__img category-card__img--circle" src="{{ 'cat-apparels-2.png' | asset_url }}" alt="" width="1254" height="1254" loading="lazy"></div>
+        <span class="category-card__label">Apparels</span>
+      </a>
+      <a href="{{ routes.collections_url }}/gears" class="category-card">
+        <div class="category-card__media"><img class="category-card__img category-card__img--circle" src="{{ 'cat-gears-2.png' | asset_url }}" alt="" width="1254" height="1254" loading="lazy"></div>
+        <span class="category-card__label">Gears</span>
+      </a>
+      <a href="{{ routes.collections_url }}/mtb-spares" class="category-card">
+        <div class="category-card__media"><img class="category-card__img category-card__img--circle" src="{{ 'cat-spares-3.png' | asset_url }}" alt="" width="1254" height="1254" loading="lazy"></div>
+        <span class="category-card__label">Spares</span>
+      </a>
+      <a href="{{ routes.collections_url }}/helmets" class="category-card">
+        <div class="category-card__media"><img class="category-card__img category-card__img--circle" src="{{ 'cat-helmets-3.png' | asset_url }}" alt="" width="1254" height="1254" loading="lazy"></div>
+        <span class="category-card__label">Helmets</span>
+      </a>
+      <a href="{{ routes.collections_url }}/accessories" class="category-card">
+        <div class="category-card__media"><img class="category-card__img" src="{{ 'cat-accessories.jpg' | asset_url }}" alt="" width="300" height="300" loading="lazy"></div>
+        <span class="category-card__label">Accessories</span>
+      </a>
+      <a href="{{ routes.collections_url }}/sale" class="category-card">
+        <div class="category-card__media"><img class="category-card__img" src="{{ 'cat-sale.jpg' | asset_url }}" alt="" width="300" height="300" loading="lazy"></div>
+        <span class="category-card__label">Sale</span>
+      </a>
+      <a href="/pages/service" class="category-card">
+        <div class="category-card__media"><img class="category-card__img" src="{{ 'cat-service.jpg' | asset_url }}" alt="" width="300" height="300" loading="lazy"></div>
+        <span class="category-card__label">Service</span>
+      </a>
+    </div>
+
+    <button type="button" class="category-cards__arrow category-cards__arrow--prev" aria-label="Previous categories"
+      onclick="var t = document.getElementById('category-cards-track'); t.scrollBy({ left: -t.clientWidth * 0.8, behavior: 'smooth' })">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m15 6-6 6 6 6"/>
+      </svg>
+    </button>
+
+    <button type="button" class="category-cards__arrow category-cards__arrow--next" aria-label="Next categories"
+      onclick="var t = document.getElementById('category-cards-track'); t.scrollBy({ left: t.clientWidth * 0.8, behavior: 'smooth' })">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m9 6 6 6-6 6"/>
+      </svg>
+    </button>
+  </div>
+</section>
+
+{% stylesheet %}
+  .category-cards {
+    padding-block: calc(var(--space-8) * 2.5);
+  }
+
+  .category-cards__head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    max-width: var(--page-max);
+    margin: 0 auto calc(var(--space-8) * 1.5);
+    padding-inline: var(--page-padding);
+    text-align: center;
+  }
+
+  .category-cards__title {
+    font-size: var(--font-size-8);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0;
+  }
+
+  .category-cards__subtitle {
+    color: var(--color-muted);
+    font-size: var(--font-size-3);
+    max-width: 480px;
+    margin: 0;
+  }
+
+  .category-cards__slider {
+    position: relative;
+  }
+
+  /* full-width row; side padding lines the first card up with the heading */
+  .category-cards__track {
+    --track-pad: max(var(--page-padding), calc((100vw - var(--page-max)) / 2));
+    display: flex;
+    gap: var(--space-6);
+    overflow-x: auto;
+    padding-inline: var(--track-pad);
+    scroll-padding-inline: var(--track-pad);
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .category-cards__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .category-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    flex: 0 0 clamp(22rem, 25vw, 36rem);
+    color: var(--gray-12);
+    text-decoration: none;
+    scroll-snap-align: start;
+  }
+
+  .category-card__media {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: var(--radius-3);
+  }
+
+  .category-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .category-card:hover .category-card__img {
+    transform: scale(1.05);
+  }
+
+  /* circular artwork: zoom in so the white corners fall outside the card */
+  .category-card__img--circle {
+    transform: scale(1.5);
+  }
+
+  .category-card:hover .category-card__img--circle {
+    transform: scale(1.58);
+  }
+
+  .category-card__label {
+    text-align: center;
+    font-size: var(--font-size-5);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: color 0.2s ease;
+  }
+
+  .category-card:hover .category-card__label {
+    color: var(--color-accent);
+  }
+
+  .category-cards__arrow {
+    position: absolute;
+    top: calc(50% - 1.8rem);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.8rem;
+    height: 4.8rem;
+    border: 0;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--gray-12);
+    box-shadow: var(--shadow-3);
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .category-cards__arrow:hover {
+    background: var(--color-accent);
+    color: #fff;
+  }
+
+  .category-cards__arrow--prev {
+    left: var(--space-4);
+  }
+
+  .category-cards__arrow--next {
+    right: var(--space-4);
+  }
+
+  @media (max-width: 640px) {
+    .category-cards {
+      padding-block: var(--space-8);
+    }
+
+    .category-cards__track {
+      gap: var(--space-5);
+    }
+
+    .category-cards__head {
+      margin-bottom: var(--space-8);
+    }
+
+    .category-cards__title {
+      font-size: var(--font-size-6);
+    }
+
+    .category-card__label {
+      font-size: var(--font-size-4);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Category Cards",
+  "presets": [
+    { "name": "Category Cards" }
+  ]
+}
+{% endschema %}

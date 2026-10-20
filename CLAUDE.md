@@ -20,7 +20,7 @@ A from-scratch Shopify theme ("Cycling Theme") for a bicycle shop (spokehub), bu
 - No `locales/` directory — no translation files, strings are hardcoded in sections.
 - No `blocks/` directory — sections do not use the blocks API.
 - No JS in `assets/` — the only script in the theme is a small inline `<script>` in `sections/main-product.liquid` for thumbnail swapping.
-- One global stylesheet (`assets/base.css`, ~1600 lines) rather than per-section CSS files. All new styles go here.
+- One global stylesheet (`assets/base.css`, ~580 lines) rather than per-section CSS files. All new styles go here.
 - `config/settings_schema.json` only has `theme_info` — no global theme settings section exists yet.
 
 Don't "fix" these omissions (e.g. don't add a locales system or split CSS per-section) unless asked — they're a deliberate simplification for a learner-built theme, not oversights.
@@ -48,4 +48,6 @@ Standard Shopify Online Store 2.0 JSON-template structure:
 
 ## No build tooling
 
-There is no `package.json`, bundler, linter, or test suite in this repo — it's pushed straight to Shopify. Preview/deploy with the Shopify CLI (`shopify theme dev` / `shopify theme push`) if the user has it installed; don't introduce a build step unless asked.
+There is no `package.json`, bundler, or test suite in this repo — it's pushed straight to Shopify. Preview/deploy with the Shopify CLI (`shopify theme dev` / `shopify theme push`) if the user has it installed; don't introduce a build step unless asked.
+
+The one piece of tooling present is `.theme-check.yml` (Shopify's Liquid/theme linter config) — it currently disables the `ImgWidthAndHeight` rule. Run `shopify theme check` if the user wants lint feedback.

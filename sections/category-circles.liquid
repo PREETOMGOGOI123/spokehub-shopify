@@ -1,4 +1,10 @@
 <div class="categories-slider reveal">
+  {% if template.name == 'index' %}
+    <div class="categories-slider__head">
+      <h2 class="categories-slider__title">Shop by Category</h2>
+      <p class="categories-slider__subtitle">Find the right gear for every ride.</p>
+    </div>
+  {% endif %}
   <div class="categories" id="category-circles">
     <a href="{{ routes.collections_url }}/bikes" class="category">
       <div class="category__img"><img src="{{ 'cat-bikes.jpg' | asset_url }}" alt="Bikes" width="120" height="120"></div>
@@ -33,6 +39,20 @@
       <span class="category__label">Service</span>
     </a>
   </div>
+
+  <button type="button" class="categories-slider__arrow categories-slider__arrow--prev" aria-label="Scroll categories left"
+    onclick="document.getElementById('category-circles').scrollBy({ left: -200, behavior: 'smooth' })">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m15 6-6 6 6 6"/>
+    </svg>
+  </button>
+
+  <button type="button" class="categories-slider__arrow" aria-label="Scroll categories right"
+    onclick="document.getElementById('category-circles').scrollBy({ left: 200, behavior: 'smooth' })">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m9 6 6 6-6 6"/>
+    </svg>
+  </button>
 </div>
 
 <script>
@@ -49,13 +69,79 @@ document.querySelectorAll('#category-circles .category__img').forEach(function (
 {% stylesheet %}
   .categories-slider {
     position: relative;
-    background: var(--gray-4);
+    
+  }
+
+  .categories-slider__head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: calc(var(--space-8) * 2.5) var(--page-padding) 0;
+  }
+
+  .categories-slider__title {
+    font-size: var(--font-size-6);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0;
+  }
+
+  .categories-slider__subtitle {
+    color: var(--color-muted);
+    font-size: var(--font-size-3);
+    max-width: 480px;
+    margin: 0;
   }
 
   .categories-slider > .categories {
     max-width: var(--page-max);
     margin: 0 auto;
     padding: calc(var(--space-8) * 1.5) var(--page-padding);
+  }
+
+  /* only when the heading is present */
+  .categories-slider__head + .categories {
+    padding-top: var(--space-6);
+  }
+
+  .categories-slider__arrow {
+    display: none;
+  }
+
+  @media (max-width: 900px) {
+    .categories-slider__arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      right: var(--space-2);
+      top: calc(50% + var(--hero-cut, 0px) / 2);
+      transform: translateY(-50%);
+      width: 4rem;
+      height: 4rem;
+      border: 0;
+      border-radius: 50%;
+      background: #fff;
+      color: var(--gray-12);
+      box-shadow: var(--shadow-3);
+      cursor: pointer;
+    }
+
+    .categories-slider__arrow--prev {
+      right: auto;
+      left: var(--space-2);
+    }
+
+    .categories-slider__head {
+      padding-inline: 5.6rem;
+    }
+
+    .categories-slider__head ~ .categories-slider__arrow {
+      top: calc(50% + 9rem);
+    }
   }
 
   .categories {
@@ -171,11 +257,29 @@ document.querySelectorAll('#category-circles .category__img').forEach(function (
       width: 100px;
       height: 100px;
     }
+
+    .categories-slider > .categories {
+      padding-block: var(--space-6);
+      padding-inline: 5.6rem;
+      scroll-padding-inline: 5.6rem;
+    }
   }
 
   @media (max-width: 640px) {
     .categories {
       gap: var(--space-4);
+    }
+
+    .categories-slider > .categories {
+      padding-block: var(--space-5);
+    }
+
+    .categories-slider__head {
+      padding-top: var(--space-8);
+    }
+
+    .categories-slider__head ~ .categories-slider__arrow {
+      top: calc(50% + 5.5rem);
     }
 
     .category {
